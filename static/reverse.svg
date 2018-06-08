@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 80 130" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:1.41421;">
+  <symbol id="reverse" viewBox="0 0 80 130">
+    <path id="path5973.-41.-1" d="M40,0l10,10l-40,40c-10,10 -10,30 0,40l20,-20l40,-40l10,10l0,-40l-40,0Z" style="fill:inherit;fill-rule:nonzero;"/>
+    <path id="path5973.-4.-6.-9" d="M40,130l-10,-10l40,-40c10,-10 10,-30 0,-40l-20,20l-40,40l-10,-10l0,40l40,0Z" style="fill:inherit;fill-rule:nonzero;"/>
+  </symbol>
+</svg>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 125 120" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" style="fill-rule:evenodd;clip-rule:evenodd;">
+  <symbol id="+2" viewBox="0 0 125 120">
+    <path id="outerborder" d="M84.726,32.5c0.396,-1.38 -0.407,-2.5 -1.773,-2.5l-55.221,0c-1.406,0 -2.852,1.12 -3.248,2.5l-24.383,84.999c-0.396,1.381 0.407,2.5 1.813,2.5l55.222,0c1.365,0 2.811,-1.119 3.207,-2.5l24.383,-84.999Z" style="fill:#fff;stroke:#000;stroke-width:1.74px;"/>
+    <path id="innercolored" d="M71.817,42.5c0.396,-1.38 -0.407,-2.5 -1.772,-2.5l-35.142,0c-1.405,0 -2.851,1.12 -3.247,2.5l-18.646,64.999c-0.396,1.381 0.407,2.5 1.813,2.5l35.141,0c1.366,0 2.811,-1.119 3.207,-2.5l18.646,-64.999Z" style="fill:inherit;"/>
+    <path id="outerborder1" d="M124.899,2.501c0.396,-1.381 -0.407,-2.5 -1.813,-2.5l-55.222,0c-1.365,0 -2.811,1.119 -3.207,2.5l-24.383,84.999c-0.396,1.38 0.407,2.5 1.773,2.5l55.221,0c1.406,0 2.852,-1.12 3.248,-2.5l24.383,-84.999Z" style="fill:#fff;stroke:#000;stroke-width:1.74px;"/>
+    <path id="innercolored1" d="M111.99,12.501c0.396,-1.381 -0.407,-2.5 -1.813,-2.5l-35.141,0c-1.366,0 -2.811,1.119 -3.207,2.5l-18.646,64.999c-0.396,1.38 0.407,2.5 1.772,2.5l35.142,0c1.405,0 2.851,-1.12 3.247,-2.5l18.646,-64.999Z" style="fill:inherit;"/>
+  </symbol>
+</svg>
