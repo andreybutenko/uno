@@ -43,7 +43,6 @@
       this.deck.splice(0, 1);
       this.createPlayers(6);
       this.currentPlayer = this.playerName;
-      this.$forceUpdate(); // re-compute computed properties
     },
     data () {
       return {
@@ -51,7 +50,8 @@
         currentPlayer: '',
         deck: [],
         field: [],
-        players: {}
+        players: {},
+        boardDirection: +1
       }
     },
     methods: {
@@ -62,16 +62,37 @@
           let spliceIndex = this.getHand(player).indexOf(card);
           this.getHand(player).splice(spliceIndex, 1);
 
-          this.nextPlayer();
+          this.onPlay(card);
+
+          this.nextTurn();
         }
       },
-      nextPlayer() {
-        let newIndex = this.playerList.indexOf(this.currentPlayer) + 1;
-        if(newIndex >= this.playerList.length) {
-          newIndex = 0;
+      onPlay(card) {
+        if(card.type == 'skip') {
+          this.nextTurn();
         }
-
-        this.currentPlayer = this.playerList[newIndex];
+        if(card.type == 'reverse') {
+          this.boardDirection *= -1;
+        }
+        if(card.type == '+2') {
+          this.draw(this.getNextPlayer(), 2);
+        }
+        if(card.type == 'wild+4') {
+          this.draw(this.getNextPlayer(), 4);
+        }
+      },
+      nextTurn() {
+        this.currentPlayer = this.getNextPlayer();
+      },
+      getNextPlayer() {
+        let nextIndex = this.playerList.indexOf(this.currentPlayer) + this.boardDirection;
+        if(nextIndex >= this.playerList.length) {
+          nextIndex = 0;
+        }
+        if(nextIndex < 0) {
+          nextIndex = this.playerList.length - 1;
+        }
+        return this.playerList[nextIndex];
       },
       createPlayers(n) {
         for(let i = 1; i <= n; i++) {
@@ -82,9 +103,11 @@
           });
         }
       },
-      draw(player) {
+      draw(player, n = 1) {
         const drawIndex = Math.floor(Math.random() * this.deck.length);
-        this.getHand(player).push(this.deck[drawIndex]);
+        for(let i = 0; i < n; i++) {
+          this.getHand(player).push(this.deck[drawIndex]);
+        }
         this.deck.splice(drawIndex, 1);
       },
       getHand(player) {

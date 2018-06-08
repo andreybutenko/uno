@@ -24,7 +24,7 @@ export default {
     }
   },
   handConfig: {
-    initialCount: 6
+    initialCount: 7
   },
   // Creates a card with a given color and type
   createCard: function(color, type) {
