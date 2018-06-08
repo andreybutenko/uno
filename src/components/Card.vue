@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :class="[color, type]">
+  <div class="card" :class="[color, type, selectableClass]">
     <div class="card-inner">
       <span class="top-num" :class="{ hasSvg: typeDisplayHasSvg }" v-html="typeDisplay"></span>
       <div class="swoosh"></div>
@@ -12,7 +12,7 @@
 <script>
   export default {
     name: 'Card',
-    props: ['color', 'type'],
+    props: ['color', 'type', 'selectable'],
     data() {
       return {
         typeSpecials: ['skip', 'reverse', 'wild'],
@@ -40,6 +40,9 @@
       },
       swooshHasSvg() {
         return this.swooshSpecials.indexOf(this.type) != -1;
+      },
+      selectableClass() {
+        return this.selectable === false ? 'no-select' : 'selectable';
       }
     }
   }
@@ -56,6 +59,12 @@
     height: 180px;
     padding: 8px;
     border: 1px solid black;
+    cursor: default;
+    user-select: none;
+
+    &.selectable  {
+      cursor: pointer;
+    }
 
     &.red {
       .card-inner { background-color: #ff5555; }

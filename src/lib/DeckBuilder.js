@@ -23,6 +23,7 @@ export default {
       'wild+4': 4
     }
   },
+  // Creates a card with a given color and type
   createCard: function(color, type) {
     if(this.validColors.indexOf(color) == -1) {
       throw 'Invalid card color ' + color;
@@ -37,6 +38,7 @@ export default {
       type: type
     }
   },
+  // Creates a deck of cards according to the rules in deckConfig
   createDeck: function() {
     const res = [];
 
