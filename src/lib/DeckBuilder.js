@@ -23,6 +23,9 @@ export default {
       'wild+4': 4
     }
   },
+  handConfig: {
+    initialCount: 6
+  },
   // Creates a card with a given color and type
   createCard: function(color, type) {
     if(this.validColors.indexOf(color) == -1) {
@@ -57,6 +60,16 @@ export default {
     });
 
     return res;
+  },
+  // Returns a hand, subtracting cards from a given deck
+  createHand: function(deck) {
+    const hand = [];
+    for(let i = 0; i < this.handConfig.initialCount; i++) {
+      const j = Math.floor(Math.random() * deck.length);
+      hand.push(deck[j]);
+      deck.splice(j, 1);
+    }
+    return hand;
   },
   // Durstenfeld shuffle: https://stackoverflow.com/a/12646864/1110858
   shuffleDeck: function(deck) {
