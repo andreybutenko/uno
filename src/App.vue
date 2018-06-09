@@ -21,4 +21,13 @@ export default {
   body {
     font-family: 'Source Sans Pro', sans-serif;
   }
+
+  .full-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+  }
 </style>

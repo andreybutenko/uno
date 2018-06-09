@@ -1,39 +1,12 @@
 <template>
   <div class="game full-screen" :class="[currentColor]">
-    <div class="opponent-detail-layer full-screen">
-      <div class="opponent" v-for="(player, i) in opponents" :key="player" :style="getOpponentDetailStyle(i, opponents.length)">
-        <div class="content" :class="{ active: player == currentPlayer }">{{ player }}</div>
-      </div>
-    </div>
+    <OpponentDetailLayer :opponents="opponents" :currentPlayer="currentPlayer" :players="players" />
 
-    <div class="opponent-hand-layer full-screen">
-      <div class="hand-container" :style="getOpponentHandStyle(i, opponents.length)" v-for="(player, i) in opponents">
-        <CardBackHand :count="getHand(player).length" :selected="getOpponentSelected(player)" />
-      </div>
-    </div>
+    <OpponentHandLayer :opponents="opponents" :players="players" />
 
-    <div class="stack">
-      <Card
-        v-for="(card, i) in field"
-        :key="'field-' + i"
-        :selectable="false"
-        :color="card.color"
-        :type="card.type"
-        :style="{ zIndex: 3 - i }"
-        v-if="i < 3" />
-    </div>
+    <CardStack :stack="field" />
 
-    <div class="color-selector-container full-screen" v-if="needColor">
-      <div class="color-selector">
-        <p>Select a color!</p>
-        <div class="colors-container">
-          <div class="color red" @click="selectColor('red')">Red</div>
-          <div class="color yellow" @click="selectColor('yellow')">Yellow</div>
-          <div class="color green" @click="selectColor('green')">Green</div>
-          <div class="color blue" @click="selectColor('blue')">Blue</div>
-        </div>
-      </div>
-    </div>
+    <ColorSelectorModal :show="needColor" :selectColor="selectColor" />
 
     <div class="player-controls">
       <div class="player-hand">
@@ -57,21 +30,26 @@
   import Rules from '@/lib/Rules';
 
   import Card from '@/components/Card';
-  import CardBackHand from '@/components/CardBackHand';
+  import CardStack from '@/components/CardStack';
+  import ColorSelectorModal from '@/components/ColorSelectorModal';
+  import OpponentDetailLayer from '@/components/OpponentDetailLayer';
+  import OpponentHandLayer from '@/components/OpponentHandLayer';
 
   import Vue from 'vue'
 
   export default {
     name: 'Game',
-    components: { Card, CardBackHand },
+    components: { Card, CardStack, ColorSelectorModal, OpponentDetailLayer, OpponentHandLayer },
     mounted() {
       const deck = DeckBuilder.createDeck();
       DeckBuilder.shuffleDeck(deck);
       this.deck = deck;
+
       const top = DeckBuilder.getTop(deck);
       this.field.push(top.card);
       this.deck.splice(top.index, 1);
-      this.createPlayers(3);
+
+      this.createPlayers(5);
       this.currentPlayer = this.playerName;
     },
     data () {
@@ -154,37 +132,8 @@
         return this.players[player].hand;
       },
 
-      getOpponentSelected(player) {
-        if(player != this.currentPlayer) return -1;
-        return this.getPlayer(player).selectedCardIndex;
-      },
-
       getPlayer(player) {
         return this.players[player];
-      },
-
-      getOpponentDetailStyle(i, total) {
-        const frac = total != 2 ?
-          i / (total - 1) : // subtract 1 because arrays are 0-indexed while math is 1-indexed
-          (i + 1) / 3;
-        const radians = frac * Math.PI;
-        return {
-          left: 'calc(50vw * ' + -1 * Math.cos(radians) + ' + 50vw)',
-          top: 'calc(50vh * ' + -1 * Math.sin(radians) + ' + 50vh)',
-          transform: 'translateX(-' + (frac * 200) + 'px)'
-        }
-      },
-
-      getOpponentHandStyle(i, total) {
-        const frac = total != 2 ?
-          i / (total - 1) : // subtract 1 because arrays are 0-indexed while math is 1-indexed
-          (i + 1) / 3;
-        const radians = frac * Math.PI;
-        return {
-          left: 'calc(50vw * ' + -1 * Math.cos(radians) + ' + 50vw + ' + (-400 * (frac - 0.5))  + 'px)',
-          top: 'calc(50vh * ' + -1 * Math.sin(radians) + ' + 50vh + 200px)',
-          transform: 'rotate(' + (0.5 * Math.PI + radians) + 'rad) scale(0.25) translateX(-' + ((1 - frac) * 100) + '%)'//
-        }
       },
 
       selectColor(color) {
@@ -237,6 +186,12 @@
           }
           AiPlayer.makeMove(player.hand, this.manualColor, this.topCard, setSelectedCard, drawCard, chooseCard);
         }
+      },
+      field(field) {
+        if(field.length > 7) {
+          this.deck.push(field[7]);
+          field.splice(7, 1);
+        }
       }
     }
   }
@@ -265,15 +220,6 @@
     &.special {
       background-color: #b2bec3;
     }
-  }
-
-  .full-screen {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    overflow: hidden;
   }
 
   .opponent-detail-layer {
@@ -364,15 +310,6 @@
       position: absolute;
       top: 0;
       left: 0;
-      transform: translate(-50%, -50%);
-    }
-
-    & /deep/ :nth-child(2) {
-      transform: translate(-50%, -50%) rotate(15deg);
-    }
-
-    & /deep/ :nth-child(3) {
-      transform: translate(-50%, -50%) rotate(30deg);
     }
   }
 
