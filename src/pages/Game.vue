@@ -22,7 +22,19 @@
         :style="{ zIndex: 3 - i }"
         v-if="i < 3" />
     </div>
-    
+
+    <div class="color-selector-container full-screen" v-if="needColor">
+      <div class="color-selector">
+        <p>Select a color!</p>
+        <div class="colors-container">
+          <div class="color red" @click="selectColor('red')">Red</div>
+          <div class="color yellow" @click="selectColor('yellow')">Yellow</div>
+          <div class="color green" @click="selectColor('green')">Green</div>
+          <div class="color blue" @click="selectColor('blue')">Blue</div>
+        </div>
+      </div>
+    </div>
+
     <div class="player-controls">
       <div class="player-hand">
         <Card
@@ -36,31 +48,6 @@
         <div class="draw" @click="draw(playerName)">Draw</div>
       </div>
     </div>
-    <!-- <div class="players">
-      <div v-for="player in playerList" :class="{ active: player == currentPlayer }">
-        <span v-if="player == playerName">***</span> {{ player }} - {{ getHand(player).length }}
-        <CardBackHand :count="getHand(player).length" />
-      </div>
-    </div>
-    <div class="sep"></div>
-    <div class="stack">
-      <Card
-        v-for="(card, i) in field"
-        :key="'field-' + i"
-        :selectable="false"
-        :color="card.color"
-        :type="card.type" />
-      </div>
-    <div class="sep"></div>
-    <div class="hand">
-      <Card
-        v-for="(card, i) in playerHand"
-        :key="'hand' + i"
-        @click.native="playCard('Player 1', card, i)"
-        :color="card.color"
-        :type="card.type" />
-      <div @click="draw(playerName)">Draw</div>
-    </div> -->
   </div>
 </template>
 
@@ -94,18 +81,19 @@
         field: [],
         players: {},
         boardDirection: +1,
+        needColor: false,
         manualColor: null
       }
     },
     methods: {
       playCard(player, card) {
-        if(Rules.isLegal(this.topCard, card)) {
+        if(Rules.isLegal(this.topCard, this.manualColor, card)) {
           this.field.unshift(card);
 
           let spliceIndex = this.getHand(player).indexOf(card);
           this.getHand(player).splice(spliceIndex, 1);
 
-          this.onPlay(card);
+          if(this.onPlay(card) === true) return;
 
           this.nextTurn();
         }
@@ -123,6 +111,17 @@
         }
         if(card.type == 'wild+4') {
           this.draw(this.nextPlayer, 4);
+        }
+        if(card.type == 'wild' || card.type == 'wild+4') {
+          if(this.getPlayer(this.currentPlayer).bot === true) {
+            const colors = ['red', 'yellow', 'green', 'blue'];
+            this.manualColor = colors[Math.floor(Math.random() * colors.length)];
+          }
+          else {
+            this.manualColor = null;
+            this.needColor = true;
+            return true;
+          }
         }
       },
 
@@ -187,6 +186,12 @@
           top: 'calc(50vh * ' + -1 * Math.sin(radians) + ' + 50vh + 200px)',
           transform: 'rotate(' + (0.5 * Math.PI + radians) + 'rad) scale(0.25) translateX(-' + ((1 - frac) * 100) + '%)'//
         }
+      },
+
+      selectColor(color) {
+        this.needColor = false;
+        this.manualColor = color;
+        this.nextTurn();
       }
     },
     computed: {
@@ -227,7 +232,7 @@
           setTimeout(() => {
             let res = false;
             while(res === false) {
-              res = AiPlayer.makeMove(player.hand, this.topCard);
+              res = AiPlayer.makeMove(player.hand, this.manualColor, this.topCard);
               if(res === false) {
                 this.draw(this.currentPlayer);
               }
@@ -301,6 +306,52 @@
     .hand-container {
       position: absolute;
       transform-origin: left top;
+    }
+  }
+
+  .color-selector-container {
+    background-color: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+
+    .color-selector {
+      background-color: #ffffff;
+      padding: 16px;
+      width: 432px;
+
+      p {
+        padding: 16px 0 32px 0;
+        text-align: center;
+      }
+
+      .colors-container {
+        display: flex;
+
+        .color {
+          flex: 1 0 100px;
+          text-align: center;
+          padding: 32px 8px;
+          cursor: pointer;
+
+          &.red {
+            background-color: #ff5555;
+          }
+
+          &.yellow {
+            background-color: #ffaa00;
+          }
+
+          &.green {
+            background-color: #55aa55;
+          }
+
+          &.blue {
+            background-color: #5555ff;
+          }
+        }
+      }
     }
   }
 
