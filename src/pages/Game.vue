@@ -25,12 +25,8 @@
 </template>
 
 <script>
-  import Helper from '@/../common/Helper';
+  import AiPlayer from '@/../common/AiPlayer';
   import Uno from '@/../common/Uno';
-
-  import AiPlayer from '@/lib/AiPlayer';
-  import DeckBuilder from '@/lib/DeckBuilder';
-  import Rules from '@/lib/Rules';
 
   import Card from '@/components/Card';
   import CardStack from '@/components/CardStack';

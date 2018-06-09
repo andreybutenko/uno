@@ -9,7 +9,7 @@
 </template>
 
 <script>
-  import DeckBuilder from '@/lib/DeckBuilder';
+  import DeckBuilder from '@/../common/DeckBuilder';
   import Card from '@/components/Card';
   export default {
     name: 'Library',
