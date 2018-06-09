@@ -61,6 +61,7 @@
     border: 1px solid black;
     cursor: default;
     user-select: none;
+    background-color: #ffffff;
 
     &.selectable  {
       cursor: pointer;
