@@ -228,22 +228,33 @@
       currentPlayer(currentPlayer) {
         const player = this.getPlayer(currentPlayer);
         player.selectedCardIndex = -1;
+
         if(player.bot === true) {
-          setTimeout(() => {
-            let res = false;
-            while(res === false) {
-              res = AiPlayer.makeMove(player.hand, this.manualColor, this.topCard);
-              if(res === false) {
-                this.draw(this.currentPlayer);
-              }
-            }
-
-            player.selectedCardIndex = player.hand.indexOf(res);
-
-            setTimeout(() => {
-              this.playCard(this.currentPlayer, res);
-            }, 1000);
-          }, 1000);
+          const setSelectedCard = index => {
+            player.selectedCardIndex = index;
+          }
+          const drawCard = () => {
+            this.draw(this.currentPlayer);
+          }
+          const chooseCard = card => {
+            this.playCard(this.currentPlayer, card);
+          }
+          AiPlayer.makeMove(player.hand, this.manualColor, this.topCard, setSelectedCard, drawCard, chooseCard);
+          // setTimeout(() => {
+          //   let res = false;
+          //   while(res === false) {
+          //     res = AiPlayer.makeMove(player.hand, this.manualColor, this.topCard);
+          //     if(res === false) {
+          //       this.draw(this.currentPlayer);
+          //     }
+          //   }
+          //
+          //   player.selectedCardIndex = player.hand.indexOf(res);
+          //
+          //   setTimeout(() => {
+          //     this.playCard(this.currentPlayer, res);
+          //   }, 1000);
+          // }, 1000);
         }
       }
     }
