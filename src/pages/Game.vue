@@ -202,9 +202,6 @@
         }
         return this.manualColor || 'special';
       },
-      fieldReversed() {
-        return this.field.slice().reverse()
-      },
       topCard() {
         return this.field[0];
       },
@@ -240,21 +237,6 @@
             this.playCard(this.currentPlayer, card);
           }
           AiPlayer.makeMove(player.hand, this.manualColor, this.topCard, setSelectedCard, drawCard, chooseCard);
-          // setTimeout(() => {
-          //   let res = false;
-          //   while(res === false) {
-          //     res = AiPlayer.makeMove(player.hand, this.manualColor, this.topCard);
-          //     if(res === false) {
-          //       this.draw(this.currentPlayer);
-          //     }
-          //   }
-          //
-          //   player.selectedCardIndex = player.hand.indexOf(res);
-          //
-          //   setTimeout(() => {
-          //     this.playCard(this.currentPlayer, res);
-          //   }, 1000);
-          // }, 1000);
         }
       }
     }
