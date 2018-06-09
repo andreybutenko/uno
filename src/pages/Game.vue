@@ -68,8 +68,9 @@
       const deck = DeckBuilder.createDeck();
       DeckBuilder.shuffleDeck(deck);
       this.deck = deck;
-      this.field.push(this.deck[0]);
-      this.deck.splice(0, 1);
+      const top = DeckBuilder.getTop(deck);
+      this.field.push(top.card);
+      this.deck.splice(top.index, 1);
       this.createPlayers(3);
       this.currentPlayer = this.playerName;
     },
@@ -168,8 +169,6 @@
           (i + 1) / 3;
         const radians = frac * Math.PI;
         return {
-          // marginLeft: 'calc(-50vw * ' + Math.cos(radians) + ')',
-          // marginTop: 'calc(-50vh * ' + Math.sin(radians) + ')',
           left: 'calc(50vw * ' + -1 * Math.cos(radians) + ' + 50vw)',
           top: 'calc(50vh * ' + -1 * Math.sin(radians) + ' + 50vh)',
           transform: 'translateX(-' + (frac * 200) + 'px)'

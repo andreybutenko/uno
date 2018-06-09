@@ -40,6 +40,7 @@
     cursor: default;
     user-select: none;
     transition: transform 250ms;
+    background-color: #ffffff;
 
     &.selectable  {
       cursor: pointer;

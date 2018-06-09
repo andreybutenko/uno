@@ -26,6 +26,11 @@ export default {
   handConfig: {
     initialCount: 7
   },
+  topConfig: {
+    validColors: ['red', 'yellow', 'green', 'blue'],
+    validTypes: ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+  },
+
   // Creates a card with a given color and type
   createCard: function(color, type) {
     if(this.validColors.indexOf(color) == -1) {
@@ -41,6 +46,7 @@ export default {
       type: type
     }
   },
+
   // Creates a deck of cards according to the rules in deckConfig
   createDeck: function() {
     const res = [];
@@ -61,6 +67,7 @@ export default {
 
     return res;
   },
+
   // Returns a hand, subtracting cards from a given deck
   createHand: function(deck) {
     const hand = [];
@@ -71,6 +78,16 @@ export default {
     }
     return hand;
   },
+
+  // Returns a valid card to go on top of the stack
+  getTop: function(deck) {
+    const card = deck.filter(card => this.topConfig.validColors.indexOf(card.color) > -1 && this.topConfig.validTypes.indexOf(card.type) > -1)[0];
+    return {
+      index: deck.indexOf(card),
+      card: card
+    }
+  },
+
   // Durstenfeld shuffle: https://stackoverflow.com/a/12646864/1110858
   shuffleDeck: function(deck) {
     for (let i = deck.length - 1; i > 0; i--) {
