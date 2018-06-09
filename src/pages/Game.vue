@@ -1,10 +1,10 @@
 <template>
-  <div class="game full-screen" :class="[currentColor]">
-    <OpponentDetailLayer :opponents="opponents" :currentPlayer="currentPlayer" :players="players" />
+  <div class="game full-screen" :class="[currentColor]" v-if="uno != null">
+    <OpponentDetailLayer :opponents="opponents" :currentPlayer="uno.currentPlayer" :players="uno.players" />
 
-    <OpponentHandLayer :opponents="opponents" :players="players" />
+    <OpponentHandLayer :opponents="opponents" :getPlayer="uno.getPlayer" :players="uno.players" />
 
-    <CardStack :stack="field" />
+    <CardStack :stack="uno.stack" />
 
     <ColorSelectorModal :show="needColor" :selectColor="selectColor" />
 
@@ -13,18 +13,21 @@
         <Card
           v-for="(card, i) in playerHand"
           :key="'hand' + i"
-          @click.native="playCard('Player 1', card, i)"
+          @click.native="uno.playCard(playerName, card, i)"
           :color="card.color"
           :type="card.type" />
       </div>
       <div class="player-btns">
-        <div class="draw" @click="draw(playerName)">Draw</div>
+        <div class="draw" @click="uno.draw(playerName)">Draw</div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import Helper from '@/../common/Helper';
+  import Uno from '@/../common/Uno';
+
   import AiPlayer from '@/lib/AiPlayer';
   import DeckBuilder from '@/lib/DeckBuilder';
   import Rules from '@/lib/Rules';
@@ -41,157 +44,88 @@
     name: 'Game',
     components: { Card, CardStack, ColorSelectorModal, OpponentDetailLayer, OpponentHandLayer },
     mounted() {
-      const deck = DeckBuilder.createDeck();
-      DeckBuilder.shuffleDeck(deck);
-      this.deck = deck;
-
-      const top = DeckBuilder.getTop(deck);
-      this.field.push(top.card);
-      this.deck.splice(top.index, 1);
-
-      this.createPlayers(5);
-      this.currentPlayer = this.playerName;
+      this.uno = new Uno([
+        {
+          name: 'Andrey',
+          human: true,
+          remote: false
+        },
+        {
+          name: 'Bot 1',
+          human: false,
+          remote: false
+        },
+        {
+          name: 'Bot 2',
+          human: false,
+          remote: false
+        }
+      ], this.emit);
     },
     data () {
       return {
-        playerName: 'Player 1',
-        currentPlayer: '',
-        deck: [],
-        field: [],
-        players: {},
-        boardDirection: +1,
-        needColor: false,
-        manualColor: null
+        playerName: 'Andrey',
+        uno: null,
+        needColor: false
       }
     },
     methods: {
-      playCard(player, card) {
-        if(Rules.isLegal(this.topCard, this.manualColor, card)) {
-          this.field.unshift(card);
-
-          let spliceIndex = this.getHand(player).indexOf(card);
-          this.getHand(player).splice(spliceIndex, 1);
-
-          if(this.onPlay(card) === true) return;
-
-          this.nextTurn();
+      emit(event) {
+        if(event == 'needColor') {
+          this.needColor = true;
         }
       },
-
-      onPlay(card) {
-        if(card.type == 'skip') {
-          this.nextTurn();
-        }
-        if(card.type == 'reverse') {
-          this.boardDirection *= -1;
-        }
-        if(card.type == '+2') {
-          this.draw(this.nextPlayer, 2);
-        }
-        if(card.type == 'wild+4') {
-          this.draw(this.nextPlayer, 4);
-        }
-        if(card.type == 'wild' || card.type == 'wild+4') {
-          if(this.getPlayer(this.currentPlayer).bot === true) {
-            const colors = ['red', 'yellow', 'green', 'blue'];
-            this.manualColor = colors[Math.floor(Math.random() * colors.length)];
-          }
-          else {
-            this.manualColor = null;
-            this.needColor = true;
-            return true;
-          }
-        }
-      },
-
-      nextTurn() {
-        this.currentPlayer = this.nextPlayer;
-      },
-
-      createPlayers(n) {
-        for(let i = 1; i <= n; i++) {
-          let name = 'Player ' + i;
-          Vue.set(this.players, name, {
-            hand: DeckBuilder.createHand(this.deck),
-            bot: name != this.playerName,
-            selectedCardIndex: -1
-          });
-        }
-      },
-
-      draw(player, n = 1) {
-        const drawIndex = Math.floor(Math.random() * this.deck.length);
-        for(let i = 0; i < n; i++) {
-          this.getHand(player).push(this.deck[drawIndex]);
-        }
-        this.deck.splice(drawIndex, 1);
-      },
-
-      getHand(player) {
-        if(this.playerList.indexOf(player) == -1) return [];
-        return this.players[player].hand;
-      },
-
-      getPlayer(player) {
-        return this.players[player];
-      },
-
       selectColor(color) {
         this.needColor = false;
-        this.manualColor = color;
-        this.nextTurn();
+        this.uno.setManualColor(color);
       }
     },
     computed: {
       currentColor() {
-        if(this.topCard == null) return '';
-        if(this.topCard.color != 'special') {
-          return this.topCard.color;
+        if(this.uno.topStack == null) return '';
+        if(this.uno.topStack.color != 'special') {
+          return this.uno.topStack.color;
         }
-        return this.manualColor || 'special';
-      },
-      topCard() {
-        return this.field[0];
+        return this.uno.manualColor || 'special';
       },
       playerHand() {
-        return this.getHand(this.playerName);
+        return this.uno.getPlayer(this.playerName).hand;
       },
-      playerList() {
-        return Object.keys(this.players);
+      currentPlayer() {
+        // required for watcher
+        if(this.uno === null) return '';
+        return this.uno.currentPlayer;
       },
       opponents() {
-        return Object.keys(this.players).filter(name => name != this.playerName);
-      },
-      nextPlayer() {
-        let nextIndex = this.playerList.indexOf(this.currentPlayer) + this.boardDirection;
-        if(nextIndex >= this.playerList.length) nextIndex = 0;
-        else if(nextIndex < 0)  nextIndex = this.playerList.length - 1;
-        return this.playerList[nextIndex];
+        if(this.uno === null) return [];
+        return this.uno.playerList.filter(name => name != this.playerName);
       }
     },
     watch: {
       currentPlayer(currentPlayer) {
-        const player = this.getPlayer(currentPlayer);
+        const player = this.uno.getPlayer(currentPlayer);
         player.selectedCardIndex = -1;
 
-        if(player.bot === true) {
+        if(player.human === false && player.remote === false) {
           const setSelectedCard = index => {
             player.selectedCardIndex = index;
           }
           const drawCard = () => {
-            this.draw(this.currentPlayer);
+            this.uno.draw(this.currentPlayer);
           }
           const chooseCard = card => {
-            this.playCard(this.currentPlayer, card);
+            setSelectedCard(-1);
+            this.uno.playCard(this.currentPlayer, card);
           }
-          AiPlayer.makeMove(player.hand, this.manualColor, this.topCard, setSelectedCard, drawCard, chooseCard);
+
+          AiPlayer.makeMove(player.hand, this.uno.manualColor, this.uno.topStack, setSelectedCard, drawCard, chooseCard);
         }
       },
       field(field) {
-        if(field.length > 7) {
-          this.deck.push(field[7]);
-          field.splice(7, 1);
-        }
+        // if(field.length > 7) {
+        //   this.gameState.deck.push(field[7]);
+        //   field.splice(7, 1);
+        // }
       }
     }
   }
@@ -339,13 +273,6 @@
       .draw {
         background-color: #ff7675;
       }
-    }
-  }
-
-  .players {
-    div.active {
-      color: green;
-      font-weight: bold;
     }
   }
 </style>

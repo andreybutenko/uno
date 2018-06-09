@@ -1,7 +1,7 @@
 <template>
   <div class="opponent-hand-layer full-screen">
     <div class="hand-container" :style="getOpponentHandStyle(i, opponents.length)" v-for="(player, i) in opponents">
-      <CardBackHand :count="getHand(player).length" :selected="getOpponentSelected(player)" />
+      <CardBackHand :count="getPlayer(player).hand.length" :selected="getPlayer(player).selectedCardIndex" />
     </div>
   </div>
 </template>
@@ -13,14 +13,8 @@
   export default {
     name: 'OpponentHandLayer',
     components: { CardBackHand },
-    props: ['opponents', 'players'],
+    props: ['opponents', 'getPlayer', 'players'],
     methods: {
-      getHand(player) {
-        return this.players[player].hand;
-      },
-      getOpponentSelected(player) {
-        return this.players[player].selectedCardIndex;
-      },
       getOpponentHandStyle: RadialLayout.getOpponentHandStyle
     }
   }
