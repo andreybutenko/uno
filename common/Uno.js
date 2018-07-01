@@ -99,4 +99,28 @@ export default class {
   nextTurn() {
     this.currentPlayer = this.nextPlayer;
   }
+
+  remoteSetPlayerHandLength(id, length) {
+    this.getPlayer(id).hand.length = length;
+  }
+
+  remoteSetPlayerSelectedCardIndex(id, index)  {
+    this.getPlayer(id).selectedCardIndex = index;
+  }
+
+  remoteSetCurrentPlayer(id) {
+    this.currentId = id;
+  }
+
+  remoteSetBoardDirection(direction) {
+    this.boardDirection = direction;
+  }
+
+  remoteSetManualColor(color) {
+    this.manualColor = color;
+  }
+
+  remoteSetStack(stack) {
+    this.stack = stack;
+  }
 }

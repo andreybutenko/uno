@@ -13,12 +13,12 @@
         <Card
           v-for="(card, i) in playerHand"
           :key="'hand' + i"
-          @click.native="uno.playCard(playerId, card, i)"
+          @click.native="playCard(card, i)"
           :color="card.color"
           :type="card.type" />
       </div>
       <div class="player-btns">
-        <div class="draw" @click="uno.draw(playerId)">Draw</div>
+        <div class="draw" @click="draw">Draw</div>
       </div>
     </div>
   </div>
@@ -48,6 +48,7 @@
       return {
         playerId: 'Andrey',
         uno: null,
+        localGame: false,
         needColor: false
       }
     },
@@ -60,6 +61,22 @@
       selectColor(color) {
         this.needColor = false;
         this.uno.setManualColor(color);
+      },
+      draw() {
+        if(localGame) {
+          this.uno.draw(playerId);
+        }
+        else {
+          
+        }
+      },
+      playCard(card, i) {
+        if(localGame) {
+          this.uno.playCard(this.playerId, card, i);
+        }
+        else {
+
+        }
       }
     },
     computed: {
@@ -101,6 +118,29 @@
 
           AiPlayer.makeMove(player.hand, this.uno.manualColor, this.uno.topStack, setSelectedCard, drawCard, chooseCard);
         }
+      }
+    },
+    sockets: {
+      setPlayerHand(id, hand) {
+        this.uno.remoteSetPlayerHand(id, hand);
+      },
+      setPlayerHandLength(id, length) {
+        this.uno.remoteSetPlayerHandLength(id, length);
+      },
+      setPlayerSelectCardIndex(id, index) {
+        this.uno.remoteSetPlayerSelectedCardIndex(id, index);
+      },
+      setCurrentPlayer(id) {
+        this.uno.remoteSetCurrentPlayer(id);
+      },
+      setBoardDirection(direction) {
+        this.uno.remoteSetBoardDirection(direction);
+      },
+      setManualColor(color) {
+        this.uno.remoteSetManualColor(color);
+      },
+      setStack(stack) {
+        this.uno.remoteSetStack(stack);
       }
     }
   }
