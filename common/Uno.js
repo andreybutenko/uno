@@ -100,6 +100,10 @@ export default class {
     this.currentPlayer = this.nextPlayer;
   }
 
+  remoteSetPlayerHand(id, hand) {
+    this.getPlayer(id).hand = hand;
+  }
+
   remoteSetPlayerHandLength(id, length) {
     this.getPlayer(id).hand.length = length;
   }
