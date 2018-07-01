@@ -4,6 +4,7 @@ import HelloWorld from '@/components/HelloWorld';
 
 import Game from '@/pages/Game';
 import Library from '@/pages/Library';
+import Lobby from '@/pages/Lobby';
 
 Vue.use(Router);
 
@@ -18,6 +19,11 @@ export default new Router({
       path: '/game',
       name: 'Game',
       component: Game
+    },
+    {
+      path: '/lobby',
+      name: 'Lobby',
+      component: Lobby
     },
     {
       path: '/library',
