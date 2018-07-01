@@ -11,7 +11,7 @@
       <h1>Games</h1>
 
       <div v-for="match in matches" :key="match.name">
-        {{ match.name }} <button @click="joinMatch(match)">Join</button>
+        {{ match.name }} ({{ match.players.length - match.players.filter(match => match.open).length }} / {{ match.players.length }} slots open) <button @click="joinMatch(match)">Join</button>
       </div>
       <button @click="createMatch()">
         Create a Match

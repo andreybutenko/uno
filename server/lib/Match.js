@@ -90,6 +90,10 @@ export default class Match {
     if(this.isEmpty()) {
       Match.remove(this.id);
     }
+
+    if(this.getAdmins().length == 0) {
+      this.players.filter(player => player.human)[0].admin = true;
+    }
     
     this.emitUpdate();
   }
