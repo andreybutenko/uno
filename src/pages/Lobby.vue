@@ -23,6 +23,7 @@
       <span v-if="ui.enableMatchNameEdit == false">{{ currentMatch.name }} <button @click="editMatchName()" v-if="isMatchAdmin">Edit Match Name</button></span>
       <span v-else><input v-model="ui.matchNameEdit" placeholder="Match Name" /> <button @click="applyEditMatchName()">Save Match Name</button></span>
 
+      <button @click="startGame()">Start Game</button>
       <button @click="leaveMatch()">Leave</button>
 
       <br/><br/>
@@ -48,6 +49,9 @@
 </template>
 
 <script>
+  import PlayerAdapter from '@/lib/PlayerAdapter';
+  import Store from '@/Store';
+
   export default {
     name: 'Lobby',
     data() {
@@ -96,6 +100,14 @@
       }
     },
     methods: {
+      startGame() {
+        Store.set('players', PlayerAdapter.toGame(this.currentMatch.players, this.playerId));
+        Store.set('playerId', this.playerId);
+
+        this.$router.push({
+          path: '/game'
+        });
+      },
       editPlayerName() {
         this.ui.playerNameEdit = this.playerName;
         this.ui.enablePlayerNameEdit = true;

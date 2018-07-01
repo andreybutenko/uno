@@ -15,7 +15,7 @@ export default class {
     this.players = Players.createPlayers(playerConfig, deck);
     this.boardDirection = +1;
     this.manualColor = null;
-    this.currentPlayer = this.players[0].name;
+    this.currentPlayer = this.players[0].id;
 
     this.emit = emit;
   }
@@ -24,8 +24,12 @@ export default class {
     return this.stack[0];
   }
 
+  getPlayers() {
+    return this.players;
+  }
+
   get playerList() {
-    return this.players.map(player => player.name);
+    return this.players.map(player => player.id);
   }
 
   get nextPlayer() {
@@ -35,24 +39,24 @@ export default class {
     return this.playerList[nextIndex];
   }
 
-  getPlayer(name) {
-    return this.players.filter(player => player.name == name)[0] || {};
+  getPlayer(playerId) {
+    return this.players.filter(player => player.id == playerId)[0] || {};
   }
 
-  playCard(player, card) {
+  playCard(playerId, card) {
     if(Rules.isLegal(this.topStack, this.manualColor, card)) {
       this.stack.unshift(card);
 
-      let spliceIndex = this.getPlayer(player).hand.indexOf(card);
-      this.getPlayer(player).hand.splice(spliceIndex, 1);
+      let spliceIndex = this.getPlayer(playerId).hand.indexOf(card);
+      this.getPlayer(playerId).hand.splice(spliceIndex, 1);
 
-      if(this.playSideEffects(player, card) === true) return;
+      if(this.playSideEffects(playerId, card) === true) return;
 
       this.nextTurn();
     }
   }
 
-  playSideEffects(player, card) {
+  playSideEffects(playerId, card) {
     if(card.type == 'skip') {
       this.nextTurn();
     }
@@ -66,8 +70,8 @@ export default class {
       this.draw(this.nextPlayer, 4);
     }
     if(card.type == 'wild' || card.type == 'wild+4') {
-      if(this.getPlayer(player).human === false &&
-        this.getPlayer(player).remote === false) {
+      if(this.getPlayer(playerId).human === false &&
+        this.getPlayer(playerId).remote === false) {
         const colors = ['red', 'yellow', 'green', 'blue'];
         this.manualColor = colors[Math.floor(Math.random() * colors.length)];
       }
@@ -84,10 +88,10 @@ export default class {
     this.nextTurn();
   }
 
-  draw(player, n = 1) {
+  draw(playerId, n = 1) {
     for(let i = 0; i < n; i++) {
       const drawIndex = Math.floor(Math.random() * this.deck.length);
-      this.getPlayer(player).hand.push(this.deck[drawIndex]);
+      this.getPlayer(playerId).hand.push(this.deck[drawIndex]);
       this.deck.splice(drawIndex, 1);
     }
   }

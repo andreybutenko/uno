@@ -1,7 +1,7 @@
 <template>
   <div class="opponent-detail-layer full-screen">
-    <div class="opponent" v-for="(player, i) in opponents" :key="player" :style="getOpponentDetailStyle(i, opponents.length)">
-      <div class="content" :class="{ active: player == currentPlayer }">{{ player }}</div>
+    <div class="opponent" v-for="(player, i) in opponents" :key="player.id" :style="getOpponentDetailStyle(i, opponents.length)">
+      <div class="content" :class="{ active: player.id == currentPlayer }">{{ player.name }}</div>
     </div>
   </div>
 </template>

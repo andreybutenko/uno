@@ -13,12 +13,12 @@
         <Card
           v-for="(card, i) in playerHand"
           :key="'hand' + i"
-          @click.native="uno.playCard(playerName, card, i)"
+          @click.native="uno.playCard(playerId, card, i)"
           :color="card.color"
           :type="card.type" />
       </div>
       <div class="player-btns">
-        <div class="draw" @click="uno.draw(playerName)">Draw</div>
+        <div class="draw" @click="uno.draw(playerId)">Draw</div>
       </div>
     </div>
   </div>
@@ -26,6 +26,7 @@
 
 <script>
   import AiPlayer from '@/../common/AiPlayer';
+  import Store from '@/Store';
   import Uno from '@/../common/Uno';
 
   import Card from '@/components/Card';
@@ -40,27 +41,12 @@
     name: 'Game',
     components: { Card, CardStack, ColorSelectorModal, OpponentDetailLayer, OpponentHandLayer },
     mounted() {
-      this.uno = new Uno([
-        {
-          name: 'Andrey',
-          human: true,
-          remote: false
-        },
-        {
-          name: 'Bot 1',
-          human: false,
-          remote: false
-        },
-        {
-          name: 'Bot 2',
-          human: false,
-          remote: false
-        }
-      ], this.emit);
+      this.uno = new Uno(Store.get('players'), this.emit);
+      this.playerId = Store.get('playerId');
     },
     data () {
       return {
-        playerName: 'Andrey',
+        playerId: 'Andrey',
         uno: null,
         needColor: false
       }
@@ -85,16 +71,15 @@
         return this.uno.manualColor || 'special';
       },
       playerHand() {
-        return this.uno.getPlayer(this.playerName).hand;
+        return this.uno.getPlayer(this.playerId).hand;
       },
       currentPlayer() {
-        // required for watcher
         if(this.uno === null) return '';
         return this.uno.currentPlayer;
       },
       opponents() {
         if(this.uno === null) return [];
-        return this.uno.playerList.filter(name => name != this.playerName);
+        return this.uno.getPlayers().filter(player => player.id != this.playerId);
       }
     },
     watch: {
@@ -116,12 +101,6 @@
 
           AiPlayer.makeMove(player.hand, this.uno.manualColor, this.uno.topStack, setSelectedCard, drawCard, chooseCard);
         }
-      },
-      field(field) {
-        // if(field.length > 7) {
-        //   this.gameState.deck.push(field[7]);
-        //   field.splice(7, 1);
-        // }
       }
     }
   }

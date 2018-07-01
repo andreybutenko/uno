@@ -5,6 +5,7 @@ export default {
     return playerConfig.map(player => {
       return {
         name: player.name,
+        id: player.id,
         human: player.human,
         remote: player.remote,
         selectedCardIndex: -1,

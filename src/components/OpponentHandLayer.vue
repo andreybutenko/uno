@@ -1,7 +1,7 @@
 <template>
   <div class="opponent-hand-layer full-screen">
-    <div class="hand-container" :style="getOpponentHandStyle(i, opponents.length)" v-for="(player, i) in opponents">
-      <CardBackHand :count="getPlayer(player).hand.length" :selected="getPlayer(player).selectedCardIndex" />
+    <div class="hand-container" :style="getOpponentHandStyle(i, opponents.length)" v-for="(player, i) in opponents" :key="player.id">
+      <CardBackHand :count="getPlayer(player.id).hand.length" :selected="getPlayer(player.id).selectedCardIndex" />
     </div>
   </div>
 </template>

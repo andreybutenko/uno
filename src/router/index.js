@@ -16,7 +16,7 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/game',
+      path: '/game/',
       name: 'Game',
       component: Game
     },
