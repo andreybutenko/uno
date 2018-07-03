@@ -40,7 +40,7 @@ export default class Connection {
   }
 
   inMatch() {
-    return this.matchName != null;
+    return this.matchName != null && typeof this.getMatch() !== 'undefined';
   }
 
   isMatchAdmin() {
@@ -62,11 +62,7 @@ export default class Connection {
   }
 
   getMatch() {
-    if(this.inMatch()) {
-      return Match.getMatch(this.matchName);
-    }
-
-    return null;
+    return Match.getMatch(this.matchName);
   }
 
   emit(eventName, data) {

@@ -11,7 +11,7 @@ export default {
 </script>
 
 <style>
-  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,900');
+  @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,900|Wendy+One|Josefin+Sans');
   * {
     margin: 0;
     padding: 0;
@@ -19,7 +19,7 @@ export default {
   }
 
   body {
-    font-family: 'Source Sans Pro', sans-serif;
+    font-family: 'Josefin Sans', sans-serif;
   }
 
   .full-screen {

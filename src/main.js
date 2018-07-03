@@ -3,10 +3,18 @@
 import Vue from 'vue';
 import VueSocketio from 'vue-socket.io';
 
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+
+library.add(faPlusSquare);
+
 import App from './App';
 import router from './router';
 
+Vue.component('font-awesome-icon', FontAwesomeIcon);
 Vue.use(VueSocketio, 'http://localhost:3000');
+
 
 Vue.config.productionTip = false
 
