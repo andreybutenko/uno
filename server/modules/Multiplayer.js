@@ -38,6 +38,11 @@ export default {
         return;
       }
 
+      if(connection.getMatch().isWaitingForUserInput()) {
+        socket.emit('onError', 'You cannot play a card right now.');
+        return;
+      }
+
       const match = connection.getMatch();
       const uno = match.getUno();
       const id = connection.getId();
@@ -50,6 +55,30 @@ export default {
       uno.playCard(id, card);
       match.emitUnoUpdateAll();
     });
+
+    socket.on('userSelectColor', color => {
+      if(!connection.inMatch() && !connection.getMatch().isRunning())  {
+        socket.emit('onError', 'You are not in a running match.');
+        return;
+      }
+
+      if(!connection.getMatch().isPlayerTurn(connection.getId())) {
+        socket.emit('onError', 'It is not your turn.');
+        return;
+      }
+
+      if(!connection.getMatch().isWaitingForUserInput()) {
+        socket.emit('onError', 'You cannot select a color right now.');
+        return;
+      }
+
+      if(DeckBuilder.deckConfig.colors.indexOf(color) == -1) {
+        socket.emit('onError', 'That is not a valid color.');
+        return;
+      }
+
+      connection.getMatch().onUserSelectColor(color);
+    })
 
     socket.on('startGame', () => {
       if(!connection.inMatch())  {

@@ -13,6 +13,7 @@ export default class Match {
     this.players = [];
     this.running = false;
     this.uno = null;
+    this.waitingForUserInput = false;
 
     matches.push(this);
   }
@@ -40,9 +41,26 @@ export default class Match {
 
   startGame() {
     this.running = true;
-    this.uno = new Uno(PlayerAdapter.toGame(this.players, 'server'), console.log);
+    this.uno = new Uno(PlayerAdapter.toGame(this.players, 'server'), this.onGameEmit.bind(this));
     this.emitAll('startGame');
     this.emitUnoUpdateAll();
+  }
+
+  onGameEmit(event) {
+    this.waitingForUserInput = true;
+    if(event == 'needColor') {
+      this.getCurrentPlayer().player.emit('onGameEmit', event);
+    }
+  }
+
+  onUserSelectColor(color) {
+    this.waitingForUserInput = false;
+    this.getUno().setManualColor(color);
+    this.emitUnoUpdateAll();
+  }
+
+  getCurrentPlayer() {
+    return this.getPlayer(this.getUno().currentPlayer);
   }
 
   getUno() {
@@ -53,14 +71,18 @@ export default class Match {
     return this.getUno().currentPlayer == id;
   }
 
+  isWaitingForUserInput() {
+    return this.waitingForUserInput;
+  }
+
   emitUnoUpdate(connection) {
     connection.emit('unoStateUpdate', UnoState.getMaskedState(this.uno, connection.getId()));
   }
 
   emitUnoUpdateAll() {
     this.players
-    .filter(player => player.human && !player.open)
-    .forEach(player => this.emitUnoUpdate(player.player));
+      .filter(player => player.human && !player.open)
+      .forEach(player => this.emitUnoUpdate(player.player));
   }
 
   addHumanSlot() {
@@ -144,6 +166,10 @@ export default class Match {
 
   hasPlayer(connection) {
     return this.players.filter(player => player.player && player.player.getId() == connection.getId()).length > 0;
+  }
+
+  getPlayer(playerId) {
+    return this.players.filter(player => player.player && player.player.getId() == playerId)[0];
   }
 
   getAdmins() {

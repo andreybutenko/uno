@@ -61,7 +61,12 @@
       },
       selectColor(color) {
         this.needColor = false;
-        this.uno.setManualColor(color);
+        if(this.localGame) {
+          this.uno.setManualColor(color);
+        }
+        else {
+          this.$socket.emit('userSelectColor', color);
+        }
       },
       draw() {
         if(this.localGame) {
@@ -124,6 +129,9 @@
     sockets: {
       onError(text) {
         alert(text);
+      },
+      onGameEmit(event) {
+        this.emit(event);
       },
       setPlayerHand({ id, hand }) {
         console.log('setPlayerHand', id, hand);

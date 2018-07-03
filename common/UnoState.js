@@ -32,8 +32,6 @@ export default {
   },
 
   apply: (uno, state) => {
-    console.log('state', state);
-    console.log('before', uno);
     uno.boardDirection = state.boardDirection;
     uno.currentPlayer = state.currentPlayer;
     uno.deck = state.deck;
@@ -48,6 +46,5 @@ export default {
       }
     });
     uno.stack = state.stack;
-    console.log('after', uno);
   }
 }
