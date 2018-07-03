@@ -9,14 +9,17 @@
     <ColorSelectorModal :show="needColor" :selectColor="selectColor" />
 
     <div class="player-controls">
-      <div class="player-hand">
+      <transition-group name="list" tag="div" class="player-hand" :class="{ inactive: !playerTurn }">
         <Card
           v-for="(card, i) in playerHand"
           :key="'hand' + i"
-          @click.native="playCard(card, i)"
+          @click.native="selectCard(card, i)"
           :color="card.color"
-          :type="card.type" />
-      </div>
+          :type="card.type"
+          :animateIn="true"
+          :animateDisabled="i != removeIndex && removing"
+          :animateRemoving="i == removeIndex" />
+      </transition-group>
       <div class="player-btns">
         <div class="draw" @click="draw">Draw</div>
       </div>
@@ -50,7 +53,9 @@
         playerId: 'Andrey',
         uno: null,
         localGame: false,
-        needColor: false
+        needColor: false,
+        removeIndex: -1,
+        removing: false
       }
     },
     methods: {
@@ -76,6 +81,16 @@
           this.$socket.emit('draw');
         }
       },
+      selectCard(card, i) {
+        if(this.removeIndex == -1) {
+          this.removeIndex = i;
+          this.removing = true;
+          setTimeout(() => {
+            this.playCard(card, i);
+            setTimeout(() => this.removing = false, 250);
+          }, 250);
+        }
+      },
       playCard(card, i) {
         if(this.localGame) {
           this.uno.playCard(this.playerId, card);
@@ -94,11 +109,15 @@
         return this.uno.manualColor || 'special';
       },
       playerHand() {
+        if(this.uno === null) return [];
         return this.uno.getPlayer(this.playerId).hand;
       },
       currentPlayer() {
         if(this.uno === null) return '';
         return this.uno.currentPlayer;
+      },
+      playerTurn() {
+        return this.currentPlayer == this.playerId;
       },
       opponents() {
         if(this.uno === null) return [];
@@ -124,6 +143,9 @@
 
           AiPlayer.makeMove(player.hand, this.uno.manualColor, this.uno.topStack, setSelectedCard, drawCard, chooseCard);
         }
+      },
+      playerHand()  {
+        this.removeIndex = -1;
       }
     },
     sockets: {
@@ -198,6 +220,13 @@
       display: flex;
       flex-direction: row;
       justify-content: space-around;
+      transition: all 250ms;
+
+      &.inactive {
+        filter: grayscale(50%);
+        transform: scale(0.8);
+        transform-origin: bottom;
+      }
     }
 
     .player-btns {

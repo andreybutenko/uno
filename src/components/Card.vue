@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :class="[color, type, selectableClass]">
+  <div class="card" :class="[color, type, selectableClass, animateClass]">
     <div class="card-inner">
       <span class="top-num" :class="{ hasSvg: typeDisplayHasSvg }" v-html="typeDisplay"></span>
       <div class="swoosh"></div>
@@ -12,11 +12,16 @@
 <script>
   export default {
     name: 'Card',
-    props: ['color', 'type', 'selectable'],
+    props: ['color', 'type', 'selectable', 'animateRemoving', 'animateDisabled'],
+    mounted() {
+      setTimeout(() => this.animationInCompleted = true, 10);
+    },
     data() {
       return {
         typeSpecials: ['skip', 'reverse', 'wild'],
-        swooshSpecials: ['+2', 'skip', 'reverse', 'wild', 'wild+4']
+        swooshSpecials: ['+2', 'skip', 'reverse', 'wild', 'wild+4'],
+        animationInCompleted: !this.animateIn,
+        animationOutCompleted: false
       }
     },
     computed: {
@@ -43,6 +48,22 @@
       },
       selectableClass() {
         return this.selectable === false ? 'no-select' : 'selectable';
+      },
+      animateClass() {
+        if(this.animateRemoving) {
+          return 'out';
+        }
+        else if(this.animateDisabled) {
+          return 'no-animate';
+        }
+        else {
+          return '';
+        }
+      }
+    },
+    watch: {
+      animateRemoving() {
+        setTimeout(() => this.animationOutCompleted = true, 10);
       }
     }
   }
@@ -62,6 +83,24 @@
     cursor: default;
     user-select: none;
     background-color: #ffffff;
+    transition: all 250ms;
+
+    &.no-animate {
+      transition: all 0ms;
+    }
+    
+    // Handled by Vue:
+    &.list-enter {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    // Handled by us, because weird behavior animating out:
+    &.out {
+      transform: translateY(-100%) translateX(60px);
+      margin-left: -120px;
+      opacity: 0.5;
+    }
 
     &.selectable  {
       cursor: pointer;
