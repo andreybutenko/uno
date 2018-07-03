@@ -57,9 +57,6 @@
           return '';
         }
       },
-      compressedClass() {
-        return this.compressed ? '' : '';
-      },
       hoverFocusClass() {
         return this.hoverFocus ? 'hover-focus' : '';
       }
@@ -92,16 +89,9 @@
 
     &.hover-focus {
       &:hover {
-        //z-index:999;
-        transform: scale(1.2) translateY(-0%);
+        transform: scale(1.2);
         transform-origin: bottom;
       }
-    }
-
-    &.compressed {
-      z-index: 1;
-      margin-right: -80px;
-      padding: 8px;
     }
 
     &.no-animate {
@@ -116,7 +106,7 @@
 
     // Handled by us, because weird behavior animating out:
     &.out {
-      transform: translateY(-100%) translateX(60px);
+      transform: translateY(-100%) scale(1.2) !important;
       margin-left: -120px;
       opacity: 0.5;
     }
