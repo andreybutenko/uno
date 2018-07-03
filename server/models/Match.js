@@ -1,6 +1,7 @@
 import BotConnection from './BotConnection';
 import Connection from './Connection';
 
+import AiPlayer from '../../common/AiPlayer';
 import PlayerAdapter from '../../common/PlayerAdapter';
 import Uno from '../../common/Uno';
 import UnoState from '../../common/UnoState';
@@ -47,9 +48,38 @@ export default class Match {
   }
 
   onGameEmit(event) {
-    this.waitingForUserInput = true;
     if(event == 'needColor') {
+      this.waitingForUserInput = true;
       this.getCurrentPlayer().player.emit('onGameEmit', event);
+    }
+    else if(event == 'nextTurn') {
+      if(!this.getCurrentPlayer().human) {
+        const uno = this.getUno();
+        const player = uno.getPlayer(uno.currentPlayer);
+
+        const setSelectedCard = index => {
+          player.selectedCardIndex = index;
+          this.emitUnoUpdateAll();
+        }
+        const drawCard = () => {
+          uno.draw(player.id);
+          this.emitUnoUpdateAll();
+        }
+        const chooseCard = card => {
+          setSelectedCard(-1);
+          uno.playCard(player.id, card);
+          this.emitUnoUpdateAll();
+        }
+
+        AiPlayer.makeMove(
+          player.hand,
+          uno.manualColor,
+          uno.topStack,
+          setSelectedCard,
+          drawCard,
+          chooseCard
+        );
+      }
     }
   }
 

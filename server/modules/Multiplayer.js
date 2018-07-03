@@ -5,7 +5,7 @@ export default {
     socket.on('draw', () => {
       console.log('drawing...');
 
-      if(!connection.inMatch() && !connection.getMatch().isRunning())  {
+      if(!connection.inMatch() || !connection.getMatch().isRunning())  {
         socket.emit('onError', 'You are not in a running match.');
         return;
       }
@@ -28,7 +28,7 @@ export default {
     socket.on('playCard', card => {
       console.log('drawing...');
 
-      if(!connection.inMatch() && !connection.getMatch().isRunning())  {
+      if(!connection.inMatch() || !connection.getMatch().isRunning())  {
         socket.emit('onError', 'You are not in a running match.');
         return;
       }
@@ -57,7 +57,7 @@ export default {
     });
 
     socket.on('userSelectColor', color => {
-      if(!connection.inMatch() && !connection.getMatch().isRunning())  {
+      if(!connection.inMatch() || !connection.getMatch().isRunning())  {
         socket.emit('onError', 'You are not in a running match.');
         return;
       }
@@ -90,7 +90,7 @@ export default {
     });
 
     socket.on('resyncGame', () => {
-      if(!connection.inMatch() && !connection.getMatch().isRunning())  {
+      if(!connection.inMatch() || !connection.getMatch().isRunning())  {
         socket.emit('onError', 'You are not in a running match.');
         return;
       }

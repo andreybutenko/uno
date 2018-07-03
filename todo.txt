@@ -1,0 +1,1 @@
+- rotation should also depend on player so you can see if two players play the same cards

@@ -17,6 +17,7 @@ export default {
       manualColor: uno.manualColor,
       players: uno.players.map(player => {
         const mask = playerId != player.id;
+        console.log(player.id, player.selectedCardIndex)
         return {
           hand: mask ?
             this.default.generateHandWithLength(player.hand.length) :
@@ -24,7 +25,7 @@ export default {
           human: player.human,
           id: player.id,
           name: player.name,
-          selectedCardIndex: -1
+          selectedCardIndex: player.selectedCardIndex
         }
       }),
       stack: uno.stack
@@ -37,11 +38,13 @@ export default {
     uno.deck = state.deck;
     uno.manualColor = state.manualColor;
     uno.players = state.players.map((player, i) => {
+      console.log(player.id, player.selectedCardIndex)
       return {
         hand: player.hand,
         human: player.human,
         id: player.id,
         name: player.name,
+        selectedCardIndex: player.selectedCardIndex,
         remote: uno.players[i].remote
       }
     });

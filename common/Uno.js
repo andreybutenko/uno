@@ -59,7 +59,7 @@ export default class {
 
   playSideEffects(playerId, card) {
     if(card.type == 'skip') {
-      this.nextTurn();
+      this.nextTurn(true);
     }
     if(card.type == 'reverse') {
       this.boardDirection *= -1;
@@ -97,8 +97,11 @@ export default class {
     }
   }
 
-  nextTurn() {
+  nextTurn(isEffect = false) {
     this.currentPlayer = this.nextPlayer;
+    if(!isEffect) {
+      this.emit('nextTurn');
+    }
   }
 
   remoteSetState(unoState) {
