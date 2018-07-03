@@ -1,5 +1,5 @@
 <template>
-  <div class="card" :class="[color, type, selectableClass, animateClass]">
+  <div class="card" :class="[color, type, selectableClass, animateClass, hoverFocusClass]" :style="{ marginLeft: shrinkAmount, marginRight: padding }">
     <div class="card-inner">
       <span class="top-num" :class="{ hasSvg: typeDisplayHasSvg }" v-html="typeDisplay"></span>
       <div class="swoosh"></div>
@@ -12,10 +12,7 @@
 <script>
   export default {
     name: 'Card',
-    props: ['color', 'type', 'selectable', 'animateRemoving', 'animateDisabled'],
-    mounted() {
-      setTimeout(() => this.animationInCompleted = true, 10);
-    },
+    props: ['color', 'type', 'selectable', 'animateRemoving', 'animateDisabled', 'shrinkAmount', 'padding', 'hoverFocus'],
     data() {
       return {
         typeSpecials: ['skip', 'reverse', 'wild'],
@@ -59,6 +56,12 @@
         else {
           return '';
         }
+      },
+      compressedClass() {
+        return this.compressed ? '' : '';
+      },
+      hoverFocusClass() {
+        return this.hoverFocus ? 'hover-focus' : '';
       }
     },
     watch: {
@@ -84,6 +87,22 @@
     user-select: none;
     background-color: #ffffff;
     transition: all 250ms;
+    flex-shrink: 0;
+    z-index: 1;
+
+    &.hover-focus {
+      &:hover {
+        //z-index:999;
+        transform: scale(1.2) translateY(-0%);
+        transform-origin: bottom;
+      }
+    }
+
+    &.compressed {
+      z-index: 1;
+      margin-right: -80px;
+      padding: 8px;
+    }
 
     &.no-animate {
       transition: all 0ms;

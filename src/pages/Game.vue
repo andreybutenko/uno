@@ -9,16 +9,20 @@
     <ColorSelectorModal :show="needColor" :selectColor="selectColor" />
 
     <div class="player-controls">
-      <transition-group name="list" tag="div" class="player-hand" :class="{ inactive: !playerTurn }">
+      <transition-group name="list" tag="div" class="player-hand" ref="playerHand" :class="{ inactive: !playerTurn }" :style="{ marginLeft: shrinkAmountPadding }">
         <Card
           v-for="(card, i) in playerHand"
           :key="'hand' + i"
           @click.native="selectCard(card, i)"
+          @mouseover.native="mouseover(i)"
           :color="card.color"
           :type="card.type"
           :animateIn="true"
           :animateDisabled="i != removeIndex && removing"
-          :animateRemoving="i == removeIndex" />
+          :animateRemoving="i == removeIndex"
+          :hoverFocus="true"
+          :shrinkAmount="shrinkAmountPx"
+          padding="32px" />
       </transition-group>
       <div class="player-btns">
         <div class="draw" @click="draw">Draw</div>
@@ -47,6 +51,13 @@
       this.uno = new Uno(Store.get('players'), this.emit);
       this.playerId = Store.get('playerId');
       this.$socket.emit('resyncGame');
+
+      this.$nextTick(() => {
+        this.windowWidth = window.innerWidth;
+        window.addEventListener('resize', () => {
+          this.windowWidth = window.innerWidth;
+        });
+      });
     },
     data () {
       return {
@@ -55,7 +66,9 @@
         localGame: false,
         needColor: false,
         removeIndex: -1,
-        removing: false
+        removing: false,
+        windowWidth: 1920,
+        shrinkAmount: 0
       }
     },
     methods: {
@@ -98,6 +111,18 @@
         else {
           this.$socket.emit('playCard', card);
         }
+      },
+      mouseover(i) {
+      },
+      computeShrinkAmount() {
+        if(this.compressed) {
+          const numCards = this.playerHand.length;
+          const handRealWidth = (120 + 32) * (numCards + 1);
+          this.shrinkAmount = (handRealWidth - this.windowWidth) / numCards;
+        }
+        else {
+          this.shrinkAmount = 0;
+        }
       }
     },
     computed: {
@@ -122,6 +147,15 @@
       opponents() {
         if(this.uno === null) return [];
         return this.uno.getPlayers().filter(player => player.id != this.playerId);
+      },
+      compressed() {
+        return 180 * this.playerHand.length > this.windowWidth;
+      },
+      shrinkAmountPadding() {
+        return this.shrinkAmount * 1.2 + 'px';
+      },
+      shrinkAmountPx()  {
+        return '-' + this.shrinkAmount + 'px';
       }
     },
     watch: {
@@ -146,6 +180,10 @@
       },
       playerHand()  {
         this.removeIndex = -1;
+        this.computeShrinkAmount();
+      },
+      windowWidth() {
+        this.computeShrinkAmount();
       }
     },
     sockets: {
@@ -156,7 +194,6 @@
         this.emit(event);
       },
       setPlayerHand({ id, hand }) {
-        console.log('setPlayerHand', id, hand);
         this.uno.remoteSetPlayerHand(id, hand);
       },
       setPlayerHandLength({ id, length }) {
@@ -179,7 +216,6 @@
       },
       unoStateUpdate(unoState) {
         this.uno.remoteSetState(unoState);
-        console.log('unoStateUpdate', unoState, this.uno);
       }
     }
   }
@@ -219,7 +255,7 @@
     .player-hand {
       display: flex;
       flex-direction: row;
-      justify-content: space-around;
+      justify-content: center;
       transition: all 250ms;
 
       &.inactive {
