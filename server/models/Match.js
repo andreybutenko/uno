@@ -48,9 +48,12 @@ export default class Match {
   }
 
   onGameEmit(event) {
-    if(event == 'needColor') {
+    if(event == 'needColor' && this.getCurrentPlayer().human) {
       this.waitingForUserInput = true;
       this.getCurrentPlayer().player.emit('onGameEmit', event);
+    }
+    else if(event == 'needColor' && !this.getCurrentPlayer().human) {
+      this.onUserSelectColor(AiPlayer.selectColor(this.getUno().getPlayer(this.getUno().currentPlayer).hand));
     }
     else if(event == 'nextTurn') {
       if(!this.getCurrentPlayer().human) {

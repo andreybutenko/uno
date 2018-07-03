@@ -1,4 +1,6 @@
+import DeckBuilder from './DeckBuilder';
 import Rules from './Rules';
+
 export default {
   animationConfig: {
     searchDelay: 150,
@@ -61,6 +63,27 @@ export default {
     else {
       return false;
     }
+  },
+  selectColor: function(hand) {
+    const colorCounts = {};
+    for(let card of hand) {
+      colorCounts[card.color] = colorCounts[card.color] + 1 || 1;
+    }
+
+    let max = 0;
+    let maxColor = null;
+    for(let key in colorCounts) {
+      if(colorCounts[key] > max) {
+        max = colorCounts[key];
+        maxColor = key;
+      }
+    }
+
+    if(maxColor == null) {
+      maxColor = AiPlayer.chooseRandom(DeckBuilder.deckConfig.colors);
+    }
+
+    return maxColor;
   },
   chooseRandom: function(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
