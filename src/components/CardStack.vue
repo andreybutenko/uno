@@ -4,6 +4,7 @@
       v-for="(card, i) in stack"
       :key="'field-' + i"
       :selectable="false"
+      :animateDisabled="true"
       :color="card.color"
       :type="card.type"
       :style="{ zIndex: 8 - i, transform: 'rotate(' + getStackRotation(card) + ') translate(-50%, -50%)' }"

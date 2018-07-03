@@ -17,7 +17,6 @@
       return {
         typeSpecials: ['skip', 'reverse', 'wild'],
         swooshSpecials: ['+2', 'skip', 'reverse', 'wild', 'wild+4'],
-        animationInCompleted: !this.animateIn,
         animationOutCompleted: false
       }
     },

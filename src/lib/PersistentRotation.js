@@ -10,9 +10,11 @@ export default {
   getRotation(card) {
     const hash = this.hash(card);
     if(this.hasKey(hash)) {
+      console.log('hasKey');
       return this.cache[hash];
     }
     else {
+      console.log('no hasKey');
       const rotation = this.getRandomInt(-45, 45) + 'deg';
       this.cache[hash] = rotation;
       return rotation;
