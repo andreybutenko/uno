@@ -17,7 +17,7 @@ io.on('connection', function(socket) {
     console.log('a user disconnected');
     connection.disconnect();
     if(connection.inMatch()) {
-      connection.getMatch().removePlayer(connection);
+      connection.getMatch().removePlayer(connection.getId());
     }
   });
 

@@ -117,7 +117,7 @@ export default {
         return;
       }
   
-      connection.getMatch().removePlayer(connection);
+      connection.getMatch().removePlayer(connection.getId());
     });
   }
 }

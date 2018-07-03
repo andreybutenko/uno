@@ -156,12 +156,11 @@ export default class Match {
     return true;
   }
 
-  removePlayer(connection) {
-    console.log(this.players);
+  removePlayer(playerId) {
     const result = this.players
       .map((player, index) => { return { ...player, index: index }})
-      .filter(player => player.player && player.player.getId() == connection.getId())[0];
-
+      .filter(player => player.player && player.player.getId() == playerId)[0];
+    
     if(result) {
       this.removePlayerAtIndex(result.index);
     }
@@ -179,7 +178,7 @@ export default class Match {
     }
 
     if(this.isEmpty()) {
-      Match.remove(this.id);
+      Match.remove(this.name);
     }
 
     if(this.getAdmins().length == 0) {
@@ -244,8 +243,8 @@ export default class Match {
       .forEach(player => player.player.emit(eventName, payload));
   }
 
-  static remove(matchId) {
-    matches = matches.filter(match => match.id != matchId);
+  static remove(matchName) {
+    matches = matches.filter(match => match.name != matchName);
   }
 
   static matchExists(name) {
