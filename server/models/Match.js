@@ -1,12 +1,19 @@
 import BotConnection from './BotConnection';
 import Connection from './Connection';
 
+import PlayerAdapter from '../../common/PlayerAdapter';
+import Uno from '../../common/Uno';
+import UnoState from '../../common/UnoState';
+
 let matches = [];
 
 export default class Match {
   constructor(name) {
     this.name = name;
     this.players = [];
+    this.running = false;
+    this.uno = null;
+
     matches.push(this);
   }
 
@@ -25,6 +32,35 @@ export default class Match {
 
   isEmpty() {
     return this.players.filter(player => player.human && !player.open).length == 0;
+  }
+
+  isRunning() {
+    return this.running;
+  }
+
+  startGame() {
+    this.running = true;
+    this.uno = new Uno(PlayerAdapter.toGame(this.players, 'server'), console.log);
+    this.emitAll('startGame');
+    this.emitUnoUpdateAll();
+  }
+
+  getUno() {
+    return this.uno;
+  }
+
+  isPlayerTurn(id) {
+    return this.getUno().currentPlayer == id;
+  }
+
+  emitUnoUpdate(connection) {
+    connection.emit('unoStateUpdate', UnoState.getMaskedState(this.uno, connection.getId()));
+  }
+
+  emitUnoUpdateAll() {
+    this.players
+    .filter(player => player.human && !player.open)
+    .forEach(player => this.emitUnoUpdate(player.player));
   }
 
   addHumanSlot() {

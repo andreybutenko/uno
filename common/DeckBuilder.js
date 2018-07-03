@@ -94,5 +94,20 @@ export default {
       const j = Math.floor(Math.random() * (i + 1));
       [deck[i], deck[j]] = [deck[j], deck[i]];
     }
+  },
+
+  equals(a, b) {
+    console.log('equals?', a, b, a && b && a.color == b.color && a.type == b.type);
+    return a && b && a.color == b.color && a.type == b.type;
+  },
+
+  indexOf(hand, card) {
+    for(let i = 0; i < hand.length; i++) {
+      if(this.equals(hand[i], card)) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 }

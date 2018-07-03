@@ -5,7 +5,7 @@ export default {
         id: player.player.id,
         name: player.player.name,
         human: player.human,
-        remote: false && player.player.id != playerId
+        remote: playerId != 'server' || player.player.id != playerId
       };
     });
   }

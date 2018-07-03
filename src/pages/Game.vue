@@ -43,6 +43,7 @@
     mounted() {
       this.uno = new Uno(Store.get('players'), this.emit);
       this.playerId = Store.get('playerId');
+      this.$socket.emit('resyncGame');
     },
     data () {
       return {
@@ -63,19 +64,19 @@
         this.uno.setManualColor(color);
       },
       draw() {
-        if(localGame) {
+        if(this.localGame) {
           this.uno.draw(playerId);
         }
         else {
-          
+          this.$socket.emit('draw');
         }
       },
       playCard(card, i) {
-        if(localGame) {
-          this.uno.playCard(this.playerId, card, i);
+        if(this.localGame) {
+          this.uno.playCard(this.playerId, card);
         }
         else {
-
+          this.$socket.emit('playCard', card);
         }
       }
     },
@@ -121,13 +122,17 @@
       }
     },
     sockets: {
-      setPlayerHand(id, hand) {
+      onError(text) {
+        alert(text);
+      },
+      setPlayerHand({ id, hand }) {
+        console.log('setPlayerHand', id, hand);
         this.uno.remoteSetPlayerHand(id, hand);
       },
-      setPlayerHandLength(id, length) {
+      setPlayerHandLength({ id, length }) {
         this.uno.remoteSetPlayerHandLength(id, length);
       },
-      setPlayerSelectCardIndex(id, index) {
+      setPlayerSelectCardIndex({ id, index }) {
         this.uno.remoteSetPlayerSelectedCardIndex(id, index);
       },
       setCurrentPlayer(id) {
@@ -141,6 +146,10 @@
       },
       setStack(stack) {
         this.uno.remoteSetStack(stack);
+      },
+      unoStateUpdate(unoState) {
+        this.uno.remoteSetState(unoState);
+        console.log('unoStateUpdate', unoState, this.uno);
       }
     }
   }

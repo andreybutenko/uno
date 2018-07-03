@@ -49,7 +49,7 @@
 </template>
 
 <script>
-  import PlayerAdapter from '@/lib/PlayerAdapter';
+  import PlayerAdapter from '@/../common/PlayerAdapter';
   import Store from '@/Store';
 
   export default {
@@ -73,6 +73,14 @@
     sockets: {
       setId(id) {
         this.playerId = id;
+      },
+      startGame() {
+        Store.set('players', PlayerAdapter.toGame(this.currentMatch.players, this.playerId));
+        Store.set('playerId', this.playerId);
+
+        this.$router.push({
+          path: '/game'
+        });
       },
       onPlayerNameChange(name) {
         this.playerName = name;
@@ -101,12 +109,7 @@
     },
     methods: {
       startGame() {
-        Store.set('players', PlayerAdapter.toGame(this.currentMatch.players, this.playerId));
-        Store.set('playerId', this.playerId);
-
-        this.$router.push({
-          path: '/game'
-        });
+        this.$socket.emit('startGame');
       },
       editPlayerName() {
         this.ui.playerNameEdit = this.playerName;

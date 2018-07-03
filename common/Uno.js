@@ -1,6 +1,7 @@
 import DeckBuilder from './DeckBuilder';
 import Players from './Players';
 import Rules from './Rules';
+import UnoState from './UnoState';
 
 export default class {
   constructor(playerConfig, emit) {
@@ -47,7 +48,7 @@ export default class {
     if(Rules.isLegal(this.topStack, this.manualColor, card)) {
       this.stack.unshift(card);
 
-      let spliceIndex = this.getPlayer(playerId).hand.indexOf(card);
+      let spliceIndex = DeckBuilder.indexOf(this.getPlayer(playerId).hand, card);
       this.getPlayer(playerId).hand.splice(spliceIndex, 1);
 
       if(this.playSideEffects(playerId, card) === true) return;
@@ -100,12 +101,16 @@ export default class {
     this.currentPlayer = this.nextPlayer;
   }
 
+  remoteSetState(unoState) {
+    UnoState.apply(this, unoState);
+  }
+
   remoteSetPlayerHand(id, hand) {
     this.getPlayer(id).hand = hand;
   }
 
   remoteSetPlayerHandLength(id, length) {
-    this.getPlayer(id).hand.length = length;
+    this.getPlayer(id).hand = UnoState.generateHandWithLength(length);
   }
 
   remoteSetPlayerSelectedCardIndex(id, index)  {
