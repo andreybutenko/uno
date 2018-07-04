@@ -1,5 +1,5 @@
 <template>
-  <div class="match-find">
+  <div class="match-find lobby-ui">
     <h1>Games</h1>
 
     <div class="match-list">
@@ -68,8 +68,6 @@ export default {
 
 <style lang="scss" scoped>
   .match-find {
-    width: 500px;
-    max-width: 100vw;
     background-color: #F22613;
     padding: 16px 0;
 

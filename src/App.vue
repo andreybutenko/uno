@@ -32,8 +32,11 @@ export default {
   }
 
   button.vbtn {
-    background: none;
-    border: 1px solid black;
-    padding: 16px;
+    font-family: 'Josefin Sans', sans-serif;
+    background-color: white;
+    border: 1px solid #bdc3c7;
+    border-radius: 16px;
+    padding: 8px 16px;
+    cursor: pointer;
   }
 </style>

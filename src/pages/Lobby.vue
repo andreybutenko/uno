@@ -1,11 +1,7 @@
 <template>
   <div class="lobby">
-    <div class="player">
-      <h1>You</h1>
-
-      <span v-if="ui.enablePlayerNameEdit == false">{{ playerName }} <button @click="editPlayerName()">Change Name</button></span>
-      <span v-else><input v-model="ui.playerNameEdit" placeholder="User Name" /> <button @click="applyEditPlayerName()">Save Name</button></span>
-    </div>
+    <PlayerDetail
+      :playerName="playerName" />
 
     <MatchList
       :joinMatch="joinMatch"
@@ -45,13 +41,14 @@
 
 <script>
   import MatchList from '@/components/lobby/MatchList';
+  import PlayerDetail from '@/components/lobby/PlayerDetail';
 
   import PlayerAdapter from '@/../common/PlayerAdapter';
   import Store from '@/Store';
 
   export default {
     name: 'Lobby',
-    components: { MatchList },
+    components: { MatchList, PlayerDetail },
     data() {
       return {
         playerName: 'A New Player',
@@ -62,8 +59,6 @@
         ui: {
           matchNameEdit: '',
           enableMatchNameEdit: false,
-          playerNameEdit: '',
-          enablePlayerNameEdit: false,
           messageDraft: ''
         }
       }
@@ -102,14 +97,6 @@
     methods: {
       startGame() {
         this.$socket.emit('startGame');
-      },
-      editPlayerName() {
-        this.ui.playerNameEdit = this.playerName;
-        this.ui.enablePlayerNameEdit = true;
-      },
-      applyEditPlayerName() {
-        this.$socket.emit('setPlayerName', this.ui.playerNameEdit);
-        this.ui.enablePlayerNameEdit = false;
       },
       editMatchName() {
         this.ui.matchNameEdit = this.currentMatch.name;
@@ -156,6 +143,15 @@
     }
   }
 </script>
+
+<style lang="scss">
+  .lobby-ui {
+    width: 500px;
+    max-width: 100vw;
+    border-radius: 16px;
+    margin: 16px 0;
+  }
+</style>
 
 <style lang="scss" scoped>
   .btn {
