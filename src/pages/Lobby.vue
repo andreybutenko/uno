@@ -7,27 +7,11 @@
       <span v-else><input v-model="ui.playerNameEdit" placeholder="User Name" /> <button @click="applyEditPlayerName()">Save Name</button></span>
     </div>
 
-    <div class="match-find">
-      <h1>Games</h1>
+    <MatchList
+      :joinMatch="joinMatch"
+      :createMatch="createMatch"
+      :currentMatch="currentMatch" />
 
-      <div class="match-list">
-        <div class="item-match create-match" @click="createMatch()">
-          <font-awesome-icon icon="plus-square" />
-
-          <span class="label">Create a new match!</span>
-        </div>
-        <div v-for="match in sortedMatches" :key="match.name" class="item-match">
-          <span class="name">{{ match.name }}</span>
-          <span class="status">{{ getStatus(match) }}</span>
-          <span class="spacer"></span>
-          <button @click="joinMatch(match)">Join</button>
-        </div>
-      </div>
-      
-      <button @click="createMatch()">
-        Create a Match
-      </button>
-    </div>
     <div class="match-admin" v-if="currentMatch != null">
       <h1>Your Match</h1>
 
@@ -60,11 +44,14 @@
 </template>
 
 <script>
+  import MatchList from '@/components/lobby/MatchList';
+
   import PlayerAdapter from '@/../common/PlayerAdapter';
   import Store from '@/Store';
 
   export default {
     name: 'Lobby',
+    components: { MatchList },
     data() {
       return {
         playerName: 'A New Player',
@@ -96,19 +83,13 @@
       onPlayerNameChange(name) {
         this.playerName = name;
       },
-      refreshMatches(matches) {
-        console.log('matches', matches);
-        this.matches = matches;
-      },
       joinMatch(match) {
         this.currentMatch = match;
       },
       leaveMatch() {
         this.currentMatch = null;
-        this.refreshMatches();
       },
       onMatchUpdate(match) {
-        console.log('match', match);
         this.currentMatch = match;
       },
       onError(text) {
@@ -121,22 +102,6 @@
     methods: {
       startGame() {
         this.$socket.emit('startGame');
-      },
-      getOpenSpots(match) {
-        return match.players.filter(player => player.open).length;
-      },
-      getStatus(match) {
-        const numOpen = this.getOpenSpots(match);
-        const numSlots = match.players.length;
-        if(numOpen == 0) {
-          return 'Full';
-        }
-        else if(numOpen == 1) {
-          return '1 slot open';
-        }
-        else {
-          return numOpen + ' slots open';
-        }
       },
       editPlayerName() {
         this.ui.playerNameEdit = this.playerName;
@@ -169,9 +134,6 @@
       createMatch() {
         this.$socket.emit('createMatch', this.playerName + '\'s Game');
       },
-      refreshMatches() {
-        this.$socket.emit('refreshMatches');
-      },
       kickPlayer(index) {
         this.$socket.emit('kickPlayer', index);
       },
@@ -181,14 +143,6 @@
       }
     },
     computed: {
-      sortedMatches() {
-        const res = [];
-        const currentMatchName = (this.currentMatch || {}).name;
-        res.push(...this.matches.filter(match => match.name == currentMatchName));
-        res.push(...this.matches.filter(match => this.getOpenSpots(match) > 0 && match.name != currentMatchName));
-        res.push(...this.matches.filter(match => this.getOpenSpots(match) == 0 && match.name != currentMatchName));
-        return res;
-      },
       sortedPlayers() {
         const res = [];
         res.push(...this.currentMatch.players.filter(player => player.human && !player.open));
@@ -214,113 +168,5 @@
     height: 200px;
     border: 1px solid black;
     overflow-y: scroll;
-  }
-
-  .match-find {
-    width: 500px;
-    max-width: 100vw;
-    background-color: #F22613;
-
-    .match-list {
-      margin: 16px;
-      border-radius: 8px;
-      background-color: white;
-
-      .item-match.create-match {
-        font-size: 20px;
-        padding: 24px;
-        justify-content: center;
-        align-items: center;
-        border-top-right-radius: 8px;
-        border-top-left-radius: 8px;
-        cursor: pointer;
-        transition: all 250ms;
-
-        svg, path {
-          height: 20px;
-          width: 20px;
-        }
-
-        .label {
-          max-width: 0;
-          overflow: hidden;
-          white-space: nowrap;
-          transition: all 250ms;
-          vertical-align: text-bottom;
-        }
-
-        &:hover {
-          background-color: #bdc3c7;
-
-          .label {
-            max-width: 500px;
-            padding-left: 16px;
-          }
-        }
-      }
-
-      .item-match {
-        border-top: 1px solid black;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        cursor: default;
-        user-select: none;
-
-        &:first-of-type {
-          border-top: 0;
-
-          button {
-            border-top-right-radius: 8px;
-          }
-        }
-
-        &:last-of-type {
-          button {
-            border-bottom-right-radius: 8px;
-          }
-        }
-
-        .name {
-          font-family: 'Wendy One', sans-serif;
-          font-size: 20px;
-          padding: 16px;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        .status {
-          background-color: #ecf0f1;
-          border: 1px solid #bdc3c7;
-          border-radius: 4px;
-          padding: 4px 8px;
-          margin-right: 16px;
-          white-space: nowrap;
-        }
-
-        .spacer {
-          flex: 1;
-        }
-
-        button {
-          font-family: 'Source Sans Pro', sans-serif;
-          font-weight: 800;
-          background-color: #2ecc71;
-          border: 0;
-          border-left: 1px solid black;
-          padding: 8px 32px;
-          align-self: stretch;
-          text-transform: uppercase;
-          font-size: 16px;
-          cursor: pointer;
-          transition: background-color 250ms;
-
-          &:hover {
-            background-color: #65ed9f;
-          }
-        }
-      }
-    }
   }
 </style>

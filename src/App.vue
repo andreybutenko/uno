@@ -30,4 +30,10 @@ export default {
     bottom: 0;
     overflow: hidden;
   }
+
+  button.vbtn {
+    background: none;
+    border: 1px solid black;
+    padding: 16px;
+  }
 </style>

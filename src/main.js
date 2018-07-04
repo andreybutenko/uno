@@ -4,10 +4,10 @@ import Vue from 'vue';
 import VueSocketio from 'vue-socket.io';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlusSquare } from '@fortawesome/free-solid-svg-icons'
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faPlusSquare);
+library.add(faPlusCircle);
 
 import App from './App';
 import router from './router';
