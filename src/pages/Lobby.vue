@@ -16,7 +16,7 @@
 
           <span class="label">Create a new match!</span>
         </div>
-        <div v-for="match in matches" :key="match.name" class="item-match">
+        <div v-for="match in sortedMatches" :key="match.name" class="item-match">
           <span class="name">{{ match.name }}</span>
           <span class="status">{{ getStatus(match) }}</span>
           <span class="spacer"></span>
@@ -122,8 +122,11 @@
       startGame() {
         this.$socket.emit('startGame');
       },
+      getOpenSpots(match) {
+        return match.players.filter(player => player.open).length;
+      },
       getStatus(match) {
-        const numOpen = match.players.filter(player => player.open).length;
+        const numOpen = this.getOpenSpots(match);
         const numSlots = match.players.length;
         if(numOpen == 0) {
           return 'Full';
@@ -178,6 +181,14 @@
       }
     },
     computed: {
+      sortedMatches() {
+        const res = [];
+        const currentMatchName = (this.currentMatch || {}).name;
+        res.push(...this.matches.filter(match => match.name == currentMatchName));
+        res.push(...this.matches.filter(match => this.getOpenSpots(match) > 0 && match.name != currentMatchName));
+        res.push(...this.matches.filter(match => this.getOpenSpots(match) == 0 && match.name != currentMatchName));
+        return res;
+      },
       sortedPlayers() {
         const res = [];
         res.push(...this.currentMatch.players.filter(player => player.human && !player.open));
