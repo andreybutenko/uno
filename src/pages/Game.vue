@@ -59,6 +59,9 @@
         });
       });
     },
+    beforeDestroy() {
+      this.$socket.emit('leaveMatch');
+    },
     data () {
       return {
         playerId: 'Andrey',

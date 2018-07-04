@@ -43,9 +43,17 @@
         messages: []
       }
     },
+    mounted() {
+      this.$socket.emit('refreshLobby');
+    },
     sockets: {
       setId(id) {
         this.playerId = id;
+      },
+      refreshLobby({ playerName, playerId, matches }) {
+        this.playerName = playerName;
+        this.playerId = playerId;
+        this.matches = matches;
       },
       startGame() {
         Store.set('players', PlayerAdapter.toGame(this.currentMatch.players, this.playerId));

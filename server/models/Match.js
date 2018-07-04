@@ -43,6 +43,7 @@ export default class Match {
   startGame() {
     this.running = true;
     this.uno = new Uno(PlayerAdapter.toGame(this.players, 'server'), this.onGameEmit.bind(this));
+    this.emitUpdate();
     this.emitAll('startGame');
     this.emitUnoUpdateAll();
   }
@@ -253,7 +254,7 @@ export default class Match {
 
   static getOpenMatches() {
     return matches
-      .filter(match => !match.started)
+      .filter(match => !match.running)
       .map(match => match.toParcel());
   }
 

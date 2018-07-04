@@ -28,7 +28,7 @@ export default {
     const searchStep = i => () => {
       setSelectedCard(i);
 
-      if(Rules.isLegal(topCard, manualColor, hand[i])) {
+      if(i < hand.length && Rules.isLegal(topCard, manualColor, hand[i])) {
         validIndices.push(i);
 
         if(hand[i].color != 'special') {
@@ -80,7 +80,7 @@ export default {
     }
 
     if(maxColor == null) {
-      maxColor = AiPlayer.chooseRandom(DeckBuilder.deckConfig.colors);
+      maxColor = this.chooseRandom(DeckBuilder.deckConfig.colors);
     }
 
     return maxColor;

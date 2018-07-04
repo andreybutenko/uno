@@ -5,6 +5,14 @@ export default {
     socket.on('refreshMatches', () => {
       socket.emit('refreshMatches', Match.getOpenMatches());
     });
+
+    socket.on('refreshLobby', () => {
+      socket.emit('refreshLobby', {
+        playerName: connection.getName(),
+        playerId: connection.getId(),
+        matches: Match.getOpenMatches()
+      })
+    });
   
     socket.on('addHumanSlot', () => {
       if(!connection.inMatch()) {
