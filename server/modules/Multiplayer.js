@@ -62,12 +62,7 @@ export default {
         return;
       }
 
-      if(!connection.getMatch().isPlayerTurn(connection.getId())) {
-        socket.emit('onError', 'It is not your turn.');
-        return;
-      }
-
-      if(!connection.getMatch().isWaitingForUserInput()) {
+      if(!connection.getMatch().isWaitingForInputFrom(connection.getId())) {
         socket.emit('onError', 'You cannot select a color right now.');
         return;
       }

@@ -14,6 +14,7 @@ export default class Match {
     this.players = [];
     this.running = false;
     this.uno = null;
+    this.waitingForInputFrom = null;
     this.waitingForUserInput = false;
 
     matches.push(this);
@@ -50,6 +51,7 @@ export default class Match {
 
   onGameEmit(event, data) {
     if(event == 'needColor' && this.getCurrentPlayer().human) {
+      this.waitingForInputFrom = this.getCurrentPlayer().player.getId();
       this.waitingForUserInput = true;
       this.getCurrentPlayer().player.emit('onGameEmit', event);
     }
@@ -92,6 +94,7 @@ export default class Match {
   }
 
   onUserSelectColor(color) {
+    this.waitingForInputFrom = null;
     this.waitingForUserInput = false;
     this.getUno().setManualColor(color);
     this.emitUnoUpdateAll();
@@ -111,6 +114,10 @@ export default class Match {
 
   isWaitingForUserInput() {
     return this.waitingForUserInput;
+  }
+
+  isWaitingForInputFrom(id) {
+    return this.waitingForInputFrom == id;
   }
 
   emitUnoUpdate(connection) {

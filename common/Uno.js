@@ -63,24 +63,24 @@ export default class {
     }
     if(card.type == 'reverse') {
       this.boardDirection *= -1;
+      if(this.players.length == 2) {
+        this.nextTurn(true);
+      }
     }
     if(card.type == '+2') {
       this.draw(this.nextPlayer, 2);
-    }
-    if(card.type == 'wild+4') {
-      this.draw(this.nextPlayer, 4);
+      this.nextTurn(true);
     }
     if(card.type == 'wild' || card.type == 'wild+4') {
-      if(this.getPlayer(playerId).human === false &&
-        this.getPlayer(playerId).remote === false) {
-        const colors = ['red', 'yellow', 'green', 'blue'];
-        this.manualColor = colors[Math.floor(Math.random() * colors.length)];
+      this.manualColor = null;
+      this.emit('needColor');
+
+      if(card.type == 'wild+4') {
+        this.draw(this.nextPlayer, 4);
+        this.nextTurn(true);
       }
-      else {
-        this.manualColor = null;
-        this.emit('needColor');
-        return true;
-      }
+
+      return true;
     }
   }
 

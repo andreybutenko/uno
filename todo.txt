@@ -3,6 +3,4 @@
 - shrink background
 - credit background
 - show others what card you're highlighting
-- plustwo should skip your turn
 - investigate bug where your hand can become blanked
-- reverse in two player causes skip
