@@ -1,3 +1,4 @@
+import { generateName } from '../../common/NameGenerator';
 import Match from './Match.js';
 
 let connections = [];
@@ -6,7 +7,7 @@ export default class Connection {
   constructor(socket) {
     this.socket = socket;
     this.id = socket.id;
-    this.name = socket.id;
+    this.name = generateName();
     this.matchName = null;
 
     this.socket.emit('onPlayerNameChange', this.name);
