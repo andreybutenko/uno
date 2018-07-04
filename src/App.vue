@@ -10,7 +10,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss">
   @import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,900|Wendy+One|Josefin+Sans');
   * {
     margin: 0;
@@ -38,5 +38,9 @@ export default {
     border-radius: 16px;
     padding: 8px 16px;
     cursor: pointer;
+
+    &.vbtn-green {
+      background-color: #2ecc71;
+    }
   }
 </style>

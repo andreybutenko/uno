@@ -10,40 +10,22 @@
       :createMatch="createMatch"
       :currentMatch="currentMatch" />
 
-    <div class="match-admin" v-if="currentMatch != null">
-      <h1>Your Match</h1>
-
-      <span v-if="ui.enableMatchNameEdit == false">{{ currentMatch.name }} <button @click="editMatchName()" v-if="isMatchAdmin">Edit Match Name</button></span>
-      <span v-else><input v-model="ui.matchNameEdit" placeholder="Match Name" /> <button @click="applyEditMatchName()">Save Match Name</button></span>
-
-      <button @click="startGame()">Start Game</button>
-      <button @click="leaveMatch()">Leave</button>
-
-      <br/><br/>
-
-      <div>
-        <div v-for="(player, i) in sortedPlayers" :key="i">
-          {{ !player.open ? player.player.name : 'Open' }} - {{ player.human ? 'Human' : 'Bot' }}{{ player.admin ? ' - Admin'  : '' }} <button @click="kickPlayer(player.index)" v-if="isMatchAdmin && (!player.human || !player.player || player.player.name != playerName)">Kick</button>
-        </div>
-
-        <button @click="addBotSlot()" v-if="isMatchAdmin">Add Bot</button>
-        <button @click="addHumanSlot()" v-if="isMatchAdmin">Add Human</button>
-      </div>
-
-      <h1>Chat</h1>
-      <div class="chat-box">
-        <div v-for="(message, i) in messages" :key="i">
-          <b>{{ message.sender }}</b> {{ message.content }}<br/>
-        </div>
-      </div>
-      Send a message: <input v-model="ui.messageDraft" placeholder="" /> <button @click="sendMessage()">Send</button>
-    </div>
+    <MatchView
+      :playerId="playerId"
+      :currentMatch="currentMatch"
+      :messages="messages"
+      :startGame="startGame"
+      :leaveMatch="leaveMatch"
+      :kickPlayer="kickPlayer"
+      :sendMessage="sendMessage"
+      v-if="currentMatch != null" />
   </div>
 </template>
 
 <script>
   import IntroCard from '@/components/lobby/IntroCard';
   import MatchList from '@/components/lobby/MatchList';
+  import MatchView from '@/components/lobby/MatchView';
   import PlayerDetail from '@/components/lobby/PlayerDetail';
 
   import PlayerAdapter from '@/../common/PlayerAdapter';
@@ -51,19 +33,14 @@
 
   export default {
     name: 'Lobby',
-    components: { IntroCard, MatchList, PlayerDetail },
+    components: { IntroCard, MatchList, MatchView, PlayerDetail },
     data() {
       return {
         playerName: 'A New Player',
         playerId: '',
         currentMatch: null,
         matches: [],
-        messages: [],
-        ui: {
-          matchNameEdit: '',
-          enableMatchNameEdit: false,
-          messageDraft: ''
-        }
+        messages: []
       }
     },
     sockets: {
@@ -101,14 +78,6 @@
       startGame() {
         this.$socket.emit('startGame');
       },
-      editMatchName() {
-        this.ui.matchNameEdit = this.currentMatch.name;
-        this.ui.enableMatchNameEdit = true;
-      },
-      applyEditMatchName() {
-        this.$socket.emit('updateMatchName', this.ui.matchNameEdit);
-        this.ui.enableMatchNameEdit = false;
-      },
       leaveMatch() {
         this.$socket.emit('leaveMatch');
       },
@@ -131,18 +100,6 @@
         this.$socket.emit('newMessage', this.ui.messageDraft);
         this.ui.messageDraft = '';
       }
-    },
-    computed: {
-      sortedPlayers() {
-        const res = [];
-        res.push(...this.currentMatch.players.filter(player => player.human && !player.open));
-        res.push(...this.currentMatch.players.filter(player => player.human && player.open));
-        res.push(...this.currentMatch.players.filter(player => !player.human));
-        return res;
-      },
-      isMatchAdmin() {
-        return this.currentMatch != null && this.currentMatch.players.filter(player => player.player && player.player.id == this.playerId)[0].admin;
-      }
     }
   }
 </script>
@@ -161,12 +118,6 @@
     cursor: pointer;
     color: blue;
     text-decoration: underline;
-  }
-
-  .chat-box {
-    height: 200px;
-    border: 1px solid black;
-    overflow-y: scroll;
   }
 
   .lobby {
