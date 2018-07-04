@@ -48,13 +48,17 @@ export default class Match {
     this.emitUnoUpdateAll();
   }
 
-  onGameEmit(event) {
+  onGameEmit(event, data) {
     if(event == 'needColor' && this.getCurrentPlayer().human) {
       this.waitingForUserInput = true;
       this.getCurrentPlayer().player.emit('onGameEmit', event);
     }
     else if(event == 'needColor' && !this.getCurrentPlayer().human) {
       this.onUserSelectColor(AiPlayer.selectColor(this.getUno().getPlayer(this.getUno().currentPlayer).hand));
+    }
+    else if(event == 'win') {
+      this.emitAll('onWin', data);
+      this.emitUnoUpdateAll();
     }
     else if(event == 'nextTurn') {
       if(!this.getCurrentPlayer().human) {

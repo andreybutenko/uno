@@ -1,2 +1,9 @@
 - rotation should also depend on player so you can see if two players play the same cards
-- detect win
+- redirect from game page if not in a game
+- sync player order
+- shrink background
+- credit background
+- show others what card you're highlighting
+- plustwo should skip your turn
+- investigate bug where your hand can become blanked
+- reverse in two player causes skip

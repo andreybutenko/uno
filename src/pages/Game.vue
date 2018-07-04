@@ -193,6 +193,11 @@
       onError(text) {
         alert(text);
       },
+      onWin(data) {
+        alert('winner: ' + data);
+        console.log(data);
+        console.log(this.uno);
+      },
       onGameEmit(event) {
         this.emit(event);
       },

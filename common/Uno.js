@@ -98,7 +98,14 @@ export default class {
   }
 
   nextTurn(isEffect = false) {
+    if(this.getPlayer(this.currentPlayer).hand.length == 0) {
+      this.emit('win', this.currentPlayer);
+      this.currentPlayer = null;
+      return;
+    }
+
     this.currentPlayer = this.nextPlayer;
+
     if(!isEffect) {
       this.emit('nextTurn');
     }
