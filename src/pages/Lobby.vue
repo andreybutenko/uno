@@ -1,5 +1,7 @@
 <template>
   <div class="lobby">
+    <IntroCard />
+
     <PlayerDetail
       :playerName="playerName" />
 
@@ -40,6 +42,7 @@
 </template>
 
 <script>
+  import IntroCard from '@/components/lobby/IntroCard';
   import MatchList from '@/components/lobby/MatchList';
   import PlayerDetail from '@/components/lobby/PlayerDetail';
 
@@ -48,7 +51,7 @@
 
   export default {
     name: 'Lobby',
-    components: { MatchList, PlayerDetail },
+    components: { IntroCard, MatchList, PlayerDetail },
     data() {
       return {
         playerName: 'A New Player',
@@ -164,5 +167,17 @@
     height: 200px;
     border: 1px solid black;
     overflow-y: scroll;
+  }
+
+  .lobby {
+    background-image: url('/static/james-connolly-363036-unsplash.jpg');
+    background-size: cover;
+    background-position: center;
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 </style>

@@ -68,8 +68,13 @@ export default {
 
 <style lang="scss" scoped>
   .match-find {
-    background-color: #F22613;
+    background-color: #16a085;
     padding: 16px 0;
+
+    h1 {
+      text-align: center;
+      padding-top: 16px;
+    }
 
     .match-list {
       margin: 16px;
