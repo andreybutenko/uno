@@ -149,7 +149,15 @@
       },
       opponents() {
         if(this.uno === null) return [];
-        return this.uno.getPlayers().filter(player => player.id != this.playerId);
+
+        // Order players so that player is at index 0
+        // Otherwise, positions on the board are out-of-order.
+        const players = this.uno.getPlayers().slice();
+        while(players[0].id != this.playerId) {
+          players.push(players.shift()); // rotate one step
+        }
+
+        return players.filter(player => player.id != this.playerId);
       },
       compressed() {
         return 180 * this.playerHand.length > this.windowWidth;

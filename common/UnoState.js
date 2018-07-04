@@ -37,8 +37,8 @@ export default {
     uno.currentPlayer = state.currentPlayer;
     uno.deck = state.deck;
     uno.manualColor = state.manualColor;
+    console.log(state.players.map(player => player.name));
     uno.players = state.players.map((player, i) => {
-      console.log(player.id, player.selectedCardIndex)
       return {
         hand: player.hand,
         human: player.human,
