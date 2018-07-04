@@ -84,12 +84,6 @@
       joinMatch(match) {
         this.$socket.emit('joinMatch', match.name);
       },
-      addHumanSlot() {
-        this.$socket.emit('addHumanSlot');
-      },
-      addBotSlot() {
-        this.$socket.emit('addBotSlot');
-      },
       createMatch() {
         this.$socket.emit('createMatch', this.playerName + '\'s Game');
       },

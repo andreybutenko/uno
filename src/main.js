@@ -13,7 +13,7 @@ import App from './App';
 import router from './router';
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
-Vue.use(VueSocketio, 'http://localhost:3000');
+Vue.use(VueSocketio, 'https://playuno.app', { path: '/socket/socket.io' });
 
 
 Vue.config.productionTip = false

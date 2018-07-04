@@ -1,1 +1,10 @@
 - rotation should also depend on player so you can see if two players play the same cards
+
+
+TypeError: Cannot read property 'color' of undefined
+    at Object.isLegal (/srv/node/playuno.app/common/Rules.js:7:19)
+    at Timeout._onTimeout (/srv/node/playuno.app/common/AiPlayer.js:31:16)
+    at ontimeout (timers.js:427:11)
+    at tryOnTimeout (timers.js:289:5)
+    at listOnTimeout (timers.js:252:5)
+    at Timer.processTimers (timers.js:212:10)

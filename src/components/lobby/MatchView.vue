@@ -64,6 +64,12 @@
       applyEdit() {
         this.$socket.emit('updateMatchName', this.nameEdit);
         this.nameEditEnabled = false;
+      },
+      addHumanSlot() {
+        this.$socket.emit('addHumanSlot');
+      },
+      addBotSlot() {
+        this.$socket.emit('addBotSlot');
       }
     },
     computed: {
