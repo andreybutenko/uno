@@ -17,7 +17,6 @@
       :startGame="startGame"
       :leaveMatch="leaveMatch"
       :kickPlayer="kickPlayer"
-      :sendMessage="sendMessage"
       v-if="currentMatch != null" />
   </div>
 </template>
@@ -77,9 +76,6 @@
       },
       onError(text) {
         alert(text);
-      },
-      newMessage(payload) {
-        this.messages.push(payload);
       }
     },
     methods: {
@@ -97,10 +93,6 @@
       },
       kickPlayer(index) {
         this.$socket.emit('kickPlayer', index);
-      },
-      sendMessage() {
-        this.$socket.emit('newMessage', this.ui.messageDraft);
-        this.ui.messageDraft = '';
       }
     }
   }

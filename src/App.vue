@@ -38,6 +38,15 @@ export default {
     border-radius: 16px;
     padding: 8px 16px;
     cursor: pointer;
+    outline: none;
+
+    &:hover {
+      background-color: #d2d9dd;
+    }
+
+    &:focus {
+      border-color: #3498db;
+    }
 
     &.vbtn-green {
       background-color: #2ecc71;

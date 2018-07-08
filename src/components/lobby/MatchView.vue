@@ -34,26 +34,22 @@
         </div>
       </div>
 
-      <h1 class="chat-header">Chat</h1>
-      <div class="chat-box">
-        <div v-for="(message, i) in messages" :key="i">
-          <b>{{ message.sender }}</b> {{ message.content }}<br/>
-        </div>
-      </div>
-      Send a message: <input v-model="messageDraft" placeholder="" /> <button @click="sendMessage()" class="vbtn">Send</button>
+      <ChatView />
     </div>
   </div>
 </template>
 
 <script>
+  import ChatView from '../ChatView';
+
   export default {
     name: 'MatchView',
-    props: ['playerId', 'currentMatch', 'messages', 'startGame', 'leaveMatch', 'kickPlayer', 'sendMessage'],
+    props: ['playerId', 'currentMatch', 'startGame', 'leaveMatch', 'kickPlayer'],
+    components: { ChatView },
     data() {
       return {
         nameEdit: '',
-        nameEditEnabled: false,
-        messageDraft: ''
+        nameEditEnabled: false
       };
     },
     methods: {
@@ -105,19 +101,8 @@
       padding: 16px;
     }
 
-    .chat-header {
-      margin-top: 16px;
-    }
-
     .player-list {
       margin: 16px 0;
-    }
-
-    .chat-box {
-      height: 200px;
-      border: 1px solid black;
-      overflow-y: scroll;
-      margin-bottom: 10px;
     }
   }
 

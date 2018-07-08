@@ -20,6 +20,16 @@ export default {
         socket.emit('onError', 'You are not in a match');
         return;
       }
+
+      if(content.length == 0) {
+        socket.emit('onError', 'You cannot send an empty message.');
+        return;
+      }
+
+      if(content.length > 20000) {
+        socket.emit('onError', 'Your message is too long.');
+        return;
+      }
   
       connection.getMatch().sendMessage(connection.getName(), 'text', content);
     });
