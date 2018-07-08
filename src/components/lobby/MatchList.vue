@@ -3,10 +3,15 @@
     <h1>Games</h1>
 
     <div class="match-list">
-      <div class="item-match create-match" @click="createMatch()" :class="{ explicit: true }">
+      <div class="item-match create-match" @click="createMatch()" :class="{ explicit: true }" v-if="online">
         <font-awesome-icon icon="plus-circle" size="2x" />
 
         <span class="label">Create a new match</span>
+      </div>
+      <div class="item-match create-match" @click="createMatch()" :class="{ explicit: true }" v-else>
+        <font-awesome-icon icon="rocket" size="2x" />
+
+        <span class="label">Start a game</span>
       </div>
       <div v-for="match in sortedMatches" :key="match.name" class="item-match">
         <span class="name">{{ match.name }}</span>
@@ -23,7 +28,9 @@ export default {
   name: 'MatchList',
   props: ['joinMatch', 'createMatch', 'currentMatch'],
   mounted() {
-    this.$socket.emit('refreshMatches');
+    if(this.$network.online) {
+      this.$network.emit('refreshMatches');
+    }
   },
   data() {
     return {
@@ -62,6 +69,9 @@ export default {
       res.push(...this.matches.filter(match => this.getOpenSpots(match) == 0 && match.name != currentMatchName));
       return res;
     },
+    online() {
+      return this.$network.online;
+    }
   }
 }
 </script>

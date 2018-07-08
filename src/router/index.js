@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import HelloWorld from '@/components/HelloWorld';
 
 import Game from '@/pages/Game';
 import Library from '@/pages/Library';
@@ -20,8 +19,22 @@ export default new Router({
       component: Game
     },
     {
+      path: '/game/offline',
+      name: 'Offline Game',
+      component: Game
+    },
+    {
       path: '/lobby',
       name: 'Lobby',
+      component: Lobby,
+      beforeEnter (to, from, next) {
+        Vue.prototype.$network.setupSocketio();
+        next();
+     }
+    },
+    {
+      path: '/lobby/offline',
+      name: 'Offline Lobby',
       component: Lobby
     },
     {

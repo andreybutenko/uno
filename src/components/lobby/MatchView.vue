@@ -1,12 +1,11 @@
 <template>
   <div class="match-admin-container">
     <div class="match-admin">
-      <h1>Your Match</h1>
+      <h1>{{ currentMatch.name }}</h1>
 
       <template v-if="nameEditEnabled == false">
-        <div class="name"><b>Match Name:</b> {{ currentMatch.name }}</div>
         <div class="center-button">
-          <button @click="editName()" class="vbtn" v-if="isMatchAdmin">Edit Name</button>
+          <button @click="editName()" class="vbtn" v-if="isMatchAdmin">Edit Match Name</button>
         </div>
       </template>
       <template v-else>
@@ -24,17 +23,18 @@
       <div>
         <div class="player-list">
           <div v-for="(player, i) in sortedPlayers" :key="i">
-            {{ !player.open ? player.player.name : 'Open' }} - {{ player.human ? 'Human' : 'Bot' }}{{ player.admin ? ' - Admin'  : '' }} <button @click="kickPlayer(player.index)" v-if="isMatchAdmin && (!player.human || !player.player || player.player.id != playerId)">Kick</button>
+            {{ !player.open ? player.player.name : 'Open' }} - {{ player.human ? 'Human' : 'Bot' }}{{ player.admin ? ' - Admin'  : '' }}
+            <button @click="kickPlayer(player.index || i)" v-if="isMatchAdmin && (!player.human || !player.player || player.player.id != playerId)">Kick</button>
           </div>
         </div>
 
         <div class="center-button">
           <button @click="addBotSlot()" class="vbtn" v-if="isMatchAdmin">Add Bot</button>
-          <button @click="addHumanSlot()" class="vbtn" v-if="isMatchAdmin">Add Human</button>
+          <button @click="addHumanSlot()" class="vbtn" v-if="isMatchAdmin && online">Add Human</button>
         </div>
       </div>
 
-      <ChatView />
+      <ChatView v-if="online" />
     </div>
   </div>
 </template>
@@ -44,7 +44,7 @@
 
   export default {
     name: 'MatchView',
-    props: ['playerId', 'currentMatch', 'startGame', 'leaveMatch', 'kickPlayer'],
+    props: ['playerId', 'currentMatch', 'startGame', 'leaveMatch', 'updateMatchNameOffline', 'addPlayerOffline', 'kickPlayer'],
     components: { ChatView },
     data() {
       return {
@@ -54,18 +54,28 @@
     },
     methods: {
       editName() {
-        this.nameEdit = this.playerName;
+        this.nameEdit = this.currentMatch.name;
         this.nameEditEnabled = true;
       },
       applyEdit() {
-        this.$socket.emit('updateMatchName', this.nameEdit);
+        if(this.$network.online) {
+          this.$network.emit('updateMatchName', this.nameEdit);
+        }
+        else {
+          this.updateMatchNameOffline(this.nameEdit);
+        }
         this.nameEditEnabled = false;
       },
       addHumanSlot() {
-        this.$socket.emit('addHumanSlot');
+        this.$network.emit('addHumanSlot');
       },
       addBotSlot() {
-        this.$socket.emit('addBotSlot');
+        if(this.$network.online) {
+          this.$network.emit('addBotSlot');
+        }
+        else {
+          this.addPlayerOffline();
+        }
       }
     },
     computed: {
@@ -77,7 +87,13 @@
         return res;
       },
       isMatchAdmin() {
-        return this.currentMatch != null && this.currentMatch.players.filter(player => player.player && player.player.id == this.playerId)[0].admin;
+        return this.$network.offline ||
+          (this.currentMatch != null &&
+          this.currentMatch.players.filter(player => player.player &&
+          player.player.id == this.playerId)[0].admin);
+      },
+      online() {
+        return this.$network.online;
       }
     }
   }

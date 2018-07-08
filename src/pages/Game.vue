@@ -34,6 +34,7 @@
 <script>
   import AiPlayer from '@/../common/AiPlayer';
   import Store from '@/Store';
+  import Rules from '@/../common/Rules';
   import Uno from '@/../common/Uno';
 
   import Card from '@/components/Card';
@@ -50,7 +51,10 @@
     mounted() {
       this.uno = new Uno(Store.get('players'), this.emit);
       this.playerId = Store.get('playerId');
-      this.$socket.emit('resyncGame');
+
+      if(this.$network.online) {
+        this.$network.emit('resyncGame');
+      }
 
       this.$nextTick(() => {
         this.windowWidth = window.innerWidth;
@@ -60,13 +64,15 @@
       });
     },
     beforeDestroy() {
-      this.$socket.emit('leaveMatch');
+      if(this.$network.online) {
+        this.$network.emit('leaveMatch');
+      }
     },
     data () {
       return {
         playerId: 'Andrey',
         uno: null,
-        localGame: false,
+        localGame: this.$network.offline,
         needColor: false,
         removeIndex: -1,
         removing: false,
@@ -76,7 +82,19 @@
     },
     methods: {
       emit(event) {
-        if(event == 'needColor') {
+        if(this.localGame) {
+          const player = this.uno.getPlayer(this.uno.currentPlayer);
+          if(event == 'needColor' && player.human === false && player.remote === false) {
+            this.uno.setManualColor(AiPlayer.selectColor(player.hand));
+          }
+          else if(event == 'needColor') {
+            this.needColor = true;
+          }
+          else if(event == 'win') {
+            alert('winner: ' + data);
+          }
+        }
+        else if(event == 'needColor') {
           this.needColor = true;
         }
       },
@@ -86,18 +104,22 @@
           this.uno.setManualColor(color);
         }
         else {
-          this.$socket.emit('userSelectColor', color);
+          this.$network.emit('userSelectColor', color);
         }
       },
       draw() {
         if(this.localGame) {
-          this.uno.draw(playerId);
+          this.uno.draw(this.playerId);
         }
         else {
-          this.$socket.emit('draw');
+          this.$network.emit('draw');
         }
       },
       selectCard(card, i) {
+        if(this.localGame && !Rules.isLegal(this.uno.topStack, this.uno.manualColor, card)) {
+          alert('That is not a valid move.');
+          return;
+        }
         if(this.removeIndex == -1) {
           this.removeIndex = i;
           this.removing = true;
@@ -112,7 +134,7 @@
           this.uno.playCard(this.playerId, card);
         }
         else {
-          this.$socket.emit('playCard', card);
+          this.$network.emit('playCard', card);
         }
       },
       mouseover(i) {

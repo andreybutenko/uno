@@ -17,6 +17,7 @@ export default class {
     this.boardDirection = +1;
     this.manualColor = null;
     this.currentPlayer = this.players[0].id;
+    this.nextQueued = false;
 
     this.emit = emit;
   }
@@ -73,12 +74,13 @@ export default class {
     }
     if(card.type == 'wild' || card.type == 'wild+4') {
       this.manualColor = null;
-      this.emit('needColor');
 
       if(card.type == 'wild+4') {
         this.draw(this.nextPlayer, 4);
-        this.nextTurn(true);
+        this.nextTurn(true, true); // TODO verify still works on multiplayer
       }
+      
+      this.emit('needColor');
 
       return true;
     }
@@ -97,7 +99,17 @@ export default class {
     }
   }
 
-  nextTurn(isEffect = false) {
+  nextTurn(isEffect = false, delayUntilNextCall = false) {
+    if(this.nextQueued) {
+      this.nextQueued = false;
+      this.nextTurn(true);
+    }
+
+    if(delayUntilNextCall) {
+      this.nextQueued = true;
+      return;
+    }
+
     if(this.getPlayer(this.currentPlayer).hand.length == 0) {
       this.emit('win', this.currentPlayer);
       this.currentPlayer = null;

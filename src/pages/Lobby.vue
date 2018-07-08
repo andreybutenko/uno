@@ -3,7 +3,8 @@
     <IntroCard />
 
     <PlayerDetail
-      :playerName="playerName" />
+      :playerName="playerName"
+      :setName="setName" />
 
     <MatchList
       :joinMatch="joinMatch"
@@ -17,6 +18,8 @@
       :startGame="startGame"
       :leaveMatch="leaveMatch"
       :kickPlayer="kickPlayer"
+      :addPlayerOffline="addPlayerOffline"
+      :updateMatchNameOffline="updateMatchNameOffline"
       v-if="currentMatch != null" />
   </div>
 </template>
@@ -27,6 +30,7 @@
   import MatchView from '@/components/lobby/MatchView';
   import PlayerDetail from '@/components/lobby/PlayerDetail';
 
+  import { generateName } from '@/../common/NameGenerator';
   import PlayerAdapter from '@/../common/PlayerAdapter';
   import Store from '@/Store';
 
@@ -43,7 +47,12 @@
       }
     },
     mounted() {
-      this.$socket.emit('refreshLobby');
+      if(this.$network.online) {
+        this.$network.emit('refreshLobby');
+      }
+      else {
+        this.setName(generateName());
+      }
     },
     sockets: {
       setId(id) {
@@ -55,15 +64,10 @@
         this.matches = matches;
       },
       startGame() {
-        Store.set('players', PlayerAdapter.toGame(this.currentMatch.players, this.playerId));
-        Store.set('playerId', this.playerId);
-
-        this.$router.push({
-          path: '/game'
-        });
+        this.gotoGameView();
       },
       onPlayerNameChange(name) {
-        this.playerName = name;
+        this.setName(name);
       },
       joinMatch(match) {
         this.currentMatch = match;
@@ -79,20 +83,77 @@
       }
     },
     methods: {
+      setName(name) {
+        this.playerName = name;
+        this.playerId = '[player]' + name;
+      },
       startGame() {
-        this.$socket.emit('startGame');
+        if(this.$network.online) {
+          this.$network.emit('startGame');
+        }
+        else {
+          this.gotoGameView();
+        }
+      },
+      gotoGameView() {
+        Store.set('players', PlayerAdapter.toGame(this.currentMatch.players, this.playerId));
+        Store.set('playerId', this.playerId);
+
+        console.log('store player = ', PlayerAdapter.toGame(this.currentMatch.players, this.playerId))
+
+        this.$router.push({
+          path: '/game/offline'
+        });
       },
       leaveMatch() {
-        this.$socket.emit('leaveMatch');
+        if(this.$network.online) {
+          this.$network.emit('leaveMatch');
+        }
+        else {
+          this.currentMatch = null;
+        }
       },
       joinMatch(match) {
-        this.$socket.emit('joinMatch', match.name);
+        this.$network.emit('joinMatch', match.name);
       },
       createMatch() {
-        this.$socket.emit('createMatch', this.playerName + '\'s Game');
+        if(this.$network.online) {
+          this.$network.emit('createMatch', this.playerName + '\'s Game');
+        }
+        else {
+          this.currentMatch = {
+            name: this.playerName + '\'s Game',
+            players: []
+          };
+          this.addPlayerOffline(this.playerName);
+          for(let i = 0; i < 3; i++) {
+            this.addPlayerOffline();
+          }
+        }
+      },
+      addPlayerOffline(name) {
+        const isHuman = arguments.length == 1;
+        const playerName = isHuman ? name : generateName();
+
+        this.currentMatch.players.push({
+          human: isHuman,
+          remote: false,
+          player: {
+            name: playerName,
+            id: (isHuman ? '[player]' : '[bot]') + playerName
+          }
+        })
+      },
+      updateMatchNameOffline(name) {
+        this.currentMatch.name = name;
       },
       kickPlayer(index) {
-        this.$socket.emit('kickPlayer', index);
+        if(this.$network.online) {
+          this.$network.emit('kickPlayer', index);
+        }
+        else {
+          this.currentMatch.players.splice(index, 1);
+        }
       }
     }
   }

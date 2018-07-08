@@ -30,7 +30,7 @@
     methods: {
       sendMessage() {
         if(this.messageDraft.length == 0) return;
-        this.$socket.emit('newMessage', this.messageDraft);
+        this.$network.emit('newMessage', this.messageDraft);
         this.messageDraft = '';
       }
     }

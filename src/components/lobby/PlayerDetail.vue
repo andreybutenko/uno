@@ -20,7 +20,7 @@
 <script>
 export default {
   name: 'PlayerDetail',
-  props: ['playerName'],
+  props: ['playerName', 'setName'],
   data() {
     return {
       nameEdit: '',
@@ -33,7 +33,12 @@ export default {
       this.nameEditEnabled = true;
     },
     applyEdit() {
-      this.$socket.emit('setPlayerName', this.nameEdit);
+      if(this.$network.online) {
+        this.$network.emit('setPlayerName', this.nameEdit);
+      }
+      else {
+        this.setName(this.nameEdit);
+      }
       this.nameEditEnabled = false;
     }
   }

@@ -1,28 +1,19 @@
-const DEPLOY = false;
-
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue';
-import VueSocketio from 'vue-socket.io';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
+import { faPlusCircle, faRocket } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 
-library.add(faPlusCircle);
+library.add(faPlusCircle, faRocket);
 
 import App from './App';
 import router from './router';
+import network from './mixins/network';
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
-
-if(DEPLOY) {
-  Vue.use(VueSocketio, 'https://playuno.app', { path: '/socket/socket.io' });
-}
-else {
-  Vue.use(VueSocketio, 'http://localhost:3000');
-}
-
+Vue.use(network, { local: true });
 
 Vue.config.productionTip = false
 
