@@ -7,6 +7,16 @@ export default {
         socket.emit('onError', 'Username ' + newName + ' is already taken!');
         return;
       }
+
+      if(newName.length == 0) {
+        socket.emit('onError', 'Username cannot be empty.');
+        return;
+      }
+
+      if(newName.length > 30) {
+        socket.emit('onError', 'Username cannot be more than 30 characters long.');
+        return;
+      }
   
       connection.setName(newName);
   
