@@ -31,7 +31,7 @@ export default {
     overflow: hidden;
   }
 
-  button.vbtn {
+  .vbtn {
     font-family: 'Josefin Sans', sans-serif;
     background-color: white;
     border: 1px solid #bdc3c7;
@@ -39,6 +39,9 @@ export default {
     padding: 8px 16px;
     cursor: pointer;
     outline: none;
+    text-decoration: none;
+    color: black;
+    display: inline-block;
 
     &:hover {
       background-color: #d2d9dd;
@@ -48,8 +51,30 @@ export default {
       border-color: #3498db;
     }
 
+    &.vbtn-transparent {
+      background-color: rgba(255, 255, 255, 0);
+
+      &:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+      }
+    }
+
     &.vbtn-green {
       background-color: #2ecc71;
+    }
+
+    &.vbtn-blue {
+      background-color: #19B5FE;
+
+      &:hover {
+        background-color: #74b9ff;
+      }
+    }
+
+    &.vbtn-large {
+      font-size: 18px;
+      padding: 16px 32px;
+      border-radius: 32px;
     }
   }
 </style>

@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 
 import Game from '@/pages/Game';
+import Landing from '@/pages/Landing';
 import Library from '@/pages/Library';
 import Lobby from '@/pages/Lobby';
 
@@ -11,7 +12,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: '/lobby/'
+      name: 'Landing',
+      component: Landing
     },
     {
       path: '/game/',
