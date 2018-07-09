@@ -13,7 +13,7 @@ import router from './router';
 import network from './mixins/network';
 
 Vue.component('font-awesome-icon', FontAwesomeIcon);
-Vue.use(network, { local: true });
+Vue.use(network, { local: false });
 
 Vue.config.productionTip = false
 
