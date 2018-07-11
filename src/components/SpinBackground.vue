@@ -21,8 +21,17 @@
     },
     mounted() {
       for(let i = 0; i < 100; i++) {
+        this.addRandomShape();
+      }
+
+      this.resizeCanvas();
+
+      window.addEventListener('resize', this.resizeCanvas);
+      window.requestAnimationFrame(this.updateShapes);
+    },
+    methods: {
+      addRandomShape() {
         this.shapes.push({
-          //amplitudePeriod: 1000 * (i + 1),
           timeOffset: Math.random() * 40000,
           xOffsetFactor: Math.random() * 0.5 + 1,
           yOffsetFactor: Math.random() * 0.5 + 1,
@@ -35,14 +44,11 @@
           radiusPeriodFactor: Math.random() * 0.5 + 1,
           fill: COLORS[Math.floor(Math.random() * COLORS.length)]
         });
-      }
-
-      this.$refs.spinCanvas.width = window.innerWidth;
-      this.$refs.spinCanvas.height = window.innerHeight;
-
-      window.requestAnimationFrame(this.updateShapes);
-    },
-    methods: {
+      },
+      resizeCanvas() {
+        this.$refs.spinCanvas.width = window.innerWidth;
+        this.$refs.spinCanvas.height = window.innerHeight;
+      },
       flipDirection() {
         console.log('flip')
         this.direction = this.direction * -1;
@@ -62,7 +68,6 @@
           const ctx = this.$refs.spinCanvas.getContext('2d');
           ctx.clearRect(0, 0, this.$refs.spinCanvas.width, this.$refs.spinCanvas.height);
 
-          //this.directionFactor = 3 / 4 * this.direction + 1 / 4 * this.directionFactor;
           this.directionFactor = 3 / 4 * this.direction + 1 / 4 * this.directionFactor;
 
           const SPIN_PERIOD = 50000;
@@ -89,8 +94,6 @@
             ctx.fill();
           }
         }
-
-        
 
         window.requestAnimationFrame(this.updateShapes);
       }

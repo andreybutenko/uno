@@ -17,11 +17,9 @@
     "@fortawesome/free-solid-svg-icons": "^5.1.0",
     "@fortawesome/vue-fontawesome": "^0.1.0",
     "esm": "^3.0.48",
-    "konva": "^2.1.7",
     "socket.io": "^2.1.1",
     "uniqid": "^5.0.3",
     "vue": "^2.5.2",
-    "vue-konva": "^1.0.6",
     "vue-router": "^3.0.1",
     "vue-socket.io": "^2.1.1-b"
   },
