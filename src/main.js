@@ -5,6 +5,8 @@ import Vue from 'vue';
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faPlusCircle, faRocket } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import VueKonva from 'vue-konva'
+Vue.use(VueKonva);
 
 library.add(faPlusCircle, faRocket);
 

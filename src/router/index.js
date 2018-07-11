@@ -6,6 +6,8 @@ import Landing from '@/pages/Landing';
 import Library from '@/pages/Library';
 import Lobby from '@/pages/Lobby';
 
+import SpinBackground from '@/components/SpinBackground';
+
 Vue.use(Router);
 
 export default new Router({
@@ -43,6 +45,11 @@ export default new Router({
       path: '/library',
       name: 'Library',
       component: Library
+    },
+    {
+      path: '/spin',
+      name: 'Spin',
+      component: SpinBackground
     }
   ]
 });
