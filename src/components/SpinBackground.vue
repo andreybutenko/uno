@@ -1,5 +1,5 @@
 <template>
-  <div class="spin-canvas" @click="flipDirection">
+  <div class="spin-canvas">
     <canvas ref="spinCanvas"></canvas>
   </div>
 </template>
@@ -12,9 +12,9 @@
 
   export default {
     name: 'SpinBackground',
+    props: ['direction'],
     data() {
       return {
-        direction: 1,
         directionFactor: 1,
         shapes: []
       }

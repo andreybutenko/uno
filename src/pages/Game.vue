@@ -1,5 +1,7 @@
 <template>
   <div class="game full-screen" :class="[currentColor]" v-if="uno != null">
+    <SpinBackground :direction="direction" />
+
     <OpponentDetailLayer :opponents="opponents" :currentPlayer="uno.currentPlayer" :players="uno.players" />
 
     <OpponentHandLayer :opponents="opponents" :getPlayer="uno.getPlayer" :players="uno.players" />
@@ -42,12 +44,13 @@
   import ColorSelectorModal from '@/components/ColorSelectorModal';
   import OpponentDetailLayer from '@/components/OpponentDetailLayer';
   import OpponentHandLayer from '@/components/OpponentHandLayer';
+  import SpinBackground from '@/components/SpinBackground';
 
   import Vue from 'vue'
 
   export default {
     name: 'Game',
-    components: { Card, CardStack, ColorSelectorModal, OpponentDetailLayer, OpponentHandLayer },
+    components: { Card, CardStack, ColorSelectorModal, OpponentDetailLayer, OpponentHandLayer, SpinBackground },
     mounted() {
       this.uno = new Uno(Store.get('players'), this.emit);
       this.playerId = Store.get('playerId');
@@ -168,6 +171,9 @@
       },
       playerTurn() {
         return this.currentPlayer == this.playerId;
+      },
+      direction() {
+        return this.uno.boardDirection;
       },
       opponents() {
         if(this.uno === null) return [];
