@@ -12,6 +12,7 @@ export default class {
     deck.splice(top.index, 1);
 
     this.deck = deck;
+    this.secondaryDeck = [];
     this.stack = [top.card];
     this.players = Players.createPlayers(playerConfig, deck);
     this.boardDirection = +1;
@@ -48,6 +49,7 @@ export default class {
   playCard(playerId, card) {
     if(Rules.isLegal(this.topStack, this.manualColor, card)) {
       this.stack.unshift(card);
+      this.secondaryDeck.push(card);
 
       let spliceIndex = DeckBuilder.indexOf(this.getPlayer(playerId).hand, card);
       this.getPlayer(playerId).hand.splice(spliceIndex, 1);
@@ -92,6 +94,16 @@ export default class {
   }
 
   draw(playerId, n = 1) {
+    if(this.deck.length < n) {
+      DeckBuilder.shuffleDeck(this.secondaryDeck);
+      
+      for(let i = 0; i < this.secondaryDeck.length; i++) {
+        this.deck.unshift(this.secondaryDeck[i]);
+      }
+
+      this.secondaryDeck = [];
+    }
+
     for(let i = 0; i < n; i++) {
       const drawIndex = Math.floor(Math.random() * this.deck.length);
       this.getPlayer(playerId).hand.push(this.deck[drawIndex]);
