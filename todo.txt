@@ -1,7 +1,5 @@
 - rotation should also depend on player so you can see if two players play the same cards
 - redirect from game page if not in a game
-- shrink background
 - credit background
 - show others what card you're highlighting
 - investigate bug where your hand can become blanked
-- investigate bug where card is sometimes undefined (maybe ran out of cards to draw?)
