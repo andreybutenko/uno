@@ -1,33 +1,37 @@
 <template>
-  <div class="game full-screen" :class="[currentColor]" v-if="uno != null">
-    <SpinBackground :direction="direction" />
+  <div class="game-container full-screen" :class="[currentColor]" v-if="uno != null">
+    <ChatView :dark="true" :onClose="() => showChat = false" v-if="showChat" />
 
-    <OpponentDetailLayer :opponents="opponents" :currentPlayer="uno.currentPlayer" :players="uno.players" />
+    <div class="game" ref="game">
+      <SpinBackground :direction="direction" />
 
-    <OpponentHandLayer :opponents="opponents" :getPlayer="uno.getPlayer" :players="uno.players" />
+      <OpponentDetailLayer :opponents="opponents" :currentPlayer="uno.currentPlayer" :players="uno.players" />
 
-    <CardStack :stack="uno.stack" />
+      <OpponentHandLayer :opponents="opponents" :getPlayer="uno.getPlayer" :players="uno.players" />
 
-    <ColorSelectorModal :show="needColor" :selectColor="selectColor" />
+      <CardStack :stack="uno.stack" />
 
-    <div class="player-controls">
-      <transition-group name="list" tag="div" class="player-hand" ref="playerHand" :class="{ inactive: !playerTurn }" :style="{ marginLeft: shrinkAmountPadding }">
-        <Card
-          v-for="(card, i) in playerHand"
-          :key="'hand' + i"
-          @click.native="selectCard(card, i)"
-          @mouseover.native="mouseover(i)"
-          :color="card.color"
-          :type="card.type"
-          :animateIn="true"
-          :animateDisabled="i != removeIndex && removing"
-          :animateRemoving="i == removeIndex"
-          :hoverFocus="true"
-          :shrinkAmount="shrinkAmountPx"
-          padding="32px" />
-      </transition-group>
-      <div class="player-btns">
-        <div class="draw" @click="draw">Draw</div>
+      <ColorSelectorModal :show="needColor" :selectColor="selectColor" />
+
+      <div class="player-controls">
+        <transition-group name="list" tag="div" class="player-hand" ref="playerHand" :class="{ inactive: !playerTurn }" :style="{ marginLeft: shrinkAmountPadding }">
+          <Card
+            v-for="(card, i) in playerHand"
+            :key="'hand' + i"
+            @click.native="selectCard(card, i)"
+            @mouseover.native="mouseover(i)"
+            :color="card.color"
+            :type="card.type"
+            :animateIn="true"
+            :animateDisabled="i != removeIndex && removing"
+            :animateRemoving="i == removeIndex"
+            :hoverFocus="true"
+            :shrinkAmount="shrinkAmountPx"
+            padding="32px" />
+        </transition-group>
+        <div class="player-btns">
+          <div class="draw" @click="draw">Draw</div>
+        </div>
       </div>
     </div>
   </div>
@@ -41,6 +45,7 @@
 
   import Card from '@/components/Card';
   import CardStack from '@/components/CardStack';
+  import ChatView from '@/components/ChatView';
   import ColorSelectorModal from '@/components/ColorSelectorModal';
   import OpponentDetailLayer from '@/components/OpponentDetailLayer';
   import OpponentHandLayer from '@/components/OpponentHandLayer';
@@ -50,7 +55,7 @@
 
   export default {
     name: 'Game',
-    components: { Card, CardStack, ColorSelectorModal, OpponentDetailLayer, OpponentHandLayer, SpinBackground },
+    components: { Card, CardStack, ChatView, ColorSelectorModal, OpponentDetailLayer, OpponentHandLayer, SpinBackground },
     mounted() {
       this.uno = new Uno(Store.get('players'), this.emit);
       this.playerId = Store.get('playerId');
@@ -60,9 +65,9 @@
       }
 
       this.$nextTick(() => {
-        this.windowWidth = window.innerWidth;
+        this.windowWidth = this.$refs.game.clientWidth;
         window.addEventListener('resize', () => {
-          this.windowWidth = window.innerWidth;
+          this.windowWidth = this.$refs.game.clientWidth;
         });
       });
     },
@@ -80,7 +85,8 @@
         removeIndex: -1,
         removing: false,
         windowWidth: 1920,
-        shrinkAmount: 0
+        shrinkAmount: 0,
+        showChat: this.$network.online
       }
     },
     methods: {
@@ -266,7 +272,8 @@
 </script>
 
 <style lang="scss" scoped>
-  .game {
+  .game-container {
+    display: flex;
     transition: background-color 750ms;
 
     &.red {
@@ -288,6 +295,11 @@
     &.special {
       background-color: #b2bec3;
     }
+  }
+
+  .game {
+    flex: 1;
+    position: relative;
   }
 
   .player-controls {

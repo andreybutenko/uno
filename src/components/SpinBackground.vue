@@ -1,5 +1,5 @@
 <template>
-  <div class="spin-canvas">
+  <div class="spin-canvas full-screen" ref="spinCanvasContainer">
     <canvas ref="spinCanvas"></canvas>
   </div>
 </template>
@@ -46,20 +46,24 @@
         });
       },
       resizeCanvas() {
-        this.$refs.spinCanvas.width = window.innerWidth;
+        if(!this.$refs.spinCanvas) return;
+        this.$refs.spinCanvas.width = this.getWidth();
         this.$refs.spinCanvas.height = window.innerHeight;
       },
       flipDirection() {
         console.log('flip')
         this.direction = this.direction * -1;
       },
+      getWidth() {
+        return this.$refs.spinCanvasContainer.parentElement.clientWidth;
+      },
       getValues() {
         return {
-          amplitudeX: window.innerWidth / 3,
+          amplitudeX: this.getWidth() / 3,
           amplitudeY: window.innerHeight / 3,
-          centerX: window.innerWidth / 2,
+          centerX: this.getWidth() / 2,
           centerY: window.innerHeight / 2,
-          offsetX: window.innerWidth / 10,
+          offsetX: this.getWidth() / 10,
           offsetY: window.innerHeight / 10,
         };
       },
@@ -102,9 +106,4 @@
 </script>
 
 <style lang="scss" scoped>
-  .spin-canvas {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-  }
 </style>

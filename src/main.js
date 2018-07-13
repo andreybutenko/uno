@@ -3,10 +3,12 @@
 import Vue from 'vue';
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faPlusCircle, faRocket } from '@fortawesome/free-solid-svg-icons'
+import { faPlusCircle, faRocket, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+library.add(faPlusCircle, faRocket, faTimesCircle);
 
-library.add(faPlusCircle, faRocket);
+import VueChatScroll from 'vue-chat-scroll'
+Vue.use(VueChatScroll)
 
 import App from './App';
 import router from './router';

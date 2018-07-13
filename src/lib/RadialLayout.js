@@ -9,7 +9,7 @@ export default {
     const radians = frac * Math.PI;
 
     return {
-      left: 'calc(50vw * ' + -1 * Math.cos(radians) + ' + 50vw)',
+      left: 'calc(50% * ' + -1 * Math.cos(radians) + ' + 50%)',
       top: 'calc(50vh * ' + -1 * Math.sin(radians) + ' + 50vh)',
       transform: 'translateX(-' + (frac * 150) + 'px)'
     }
@@ -25,7 +25,7 @@ export default {
     const radians = frac * Math.PI;
 
     return {
-      left: 'calc(50vw * ' + -1 * Math.cos(radians) + ' + 50vw + ' + (-400 * (frac - 0.5))  + 'px)',
+      left: 'calc(50% * ' + -1 * Math.cos(radians) + ' + 50% + ' + (-400 * (frac - 0.5))  + 'px)',
       top: 'calc(50vh * ' + -1 * Math.sin(radians) + ' + 50vh + 200px)',
       transform: 'rotate(' + (0.5 * Math.PI + radians) + 'rad) scale(0.25) translateX(-' + ((1 - frac) * 100) + '%)'
     }
