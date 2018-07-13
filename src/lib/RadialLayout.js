@@ -11,7 +11,7 @@ export default {
     return {
       left: 'calc(50vw * ' + -1 * Math.cos(radians) + ' + 50vw)',
       top: 'calc(50vh * ' + -1 * Math.sin(radians) + ' + 50vh)',
-      transform: 'translateX(-' + (frac * 200) + 'px)'
+      transform: 'translateX(-' + (frac * 150) + 'px)'
     }
   },
 
