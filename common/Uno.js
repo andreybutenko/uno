@@ -5,7 +5,7 @@ import UnoState from './UnoState';
 
 export default class {
   constructor(playerConfig, emit) {
-    const deck = DeckBuilder.createDeck();
+    const deck = DeckBuilder.createDeck(playerConfig.length);
     DeckBuilder.shuffleDeck(deck);
 
     const top = DeckBuilder.getTop(deck);
@@ -96,7 +96,7 @@ export default class {
   draw(playerId, n = 1) {
     if(this.deck.length < n) {
       DeckBuilder.shuffleDeck(this.secondaryDeck);
-      
+
       for(let i = 0; i < this.secondaryDeck.length; i++) {
         this.deck.unshift(this.secondaryDeck[i]);
       }

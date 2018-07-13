@@ -48,7 +48,7 @@ export default {
   },
 
   // Creates a deck of cards according to the rules in deckConfig
-  createDeck: function() {
+  createDeck: function(numPlayers = 1) {
     const res = [];
 
     this.deckConfig.colors.forEach(color => {
@@ -64,6 +64,10 @@ export default {
         res.push(this.createCard('special', type));
       }
     });
+
+    if(numPlayers > 10) {
+      res.push(...this.createDeck(numPlayers - 10));
+    }
 
     return res;
   },
