@@ -78,6 +78,7 @@
     border: 1px solid #bdc3c7;
     overflow-y: scroll;
     margin-bottom: 10px;
+    min-height: 200px;
     max-width: 400px;
     padding: 8px;
 

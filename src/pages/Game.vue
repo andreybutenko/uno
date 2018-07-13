@@ -229,6 +229,11 @@
       },
       windowWidth() {
         this.computeShrinkAmount();
+      },
+      showChat() {
+        this.$nextTick(() => {
+          window.dispatchEvent(new Event('resize'));
+        });
       }
     },
     sockets: {

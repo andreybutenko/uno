@@ -3,3 +3,4 @@
 - credit background
 - show others what card you're highlighting
 - investigate bug where your hand can become blanked
+- share your game
