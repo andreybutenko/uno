@@ -2,7 +2,7 @@
   <div class="opponent-detail-layer full-screen">
     <div class="opponent" :class="{ active: player.id == currentPlayer }" v-for="(player, i) in opponents" :key="player.id" :style="log(getOpponentDetailStyle(i, opponents.length)) || getOpponentDetailStyle(i, opponents.length)">
       <div class="content" :style="{ backgroundColor: getColor(i) }">
-        <span class="player-name">{{ player.name }}</span>
+        <span class="player-name"><font-awesome-icon icon="robot" fixed-width v-if="!player.human" /><br/>{{ player.name }}</span>
         <span class="hand-count">
           <span>{{ player.hand.length }}</span>
           <svg><use xlink:href="/static/+2.svg#+2"></use></svg>
