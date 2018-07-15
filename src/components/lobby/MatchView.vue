@@ -208,6 +208,9 @@
       
       h1, input {
         flex: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       input {
@@ -290,6 +293,12 @@
 
         .player-icon {
           color: #e74c3c;
+        }
+
+        .name {
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .name, input {
