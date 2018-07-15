@@ -197,24 +197,32 @@ export default class Match {
 
   removePlayerAtIndex(index) {
     const removePlayer = this.players[index];
-    const isPresentHuman = removePlayer.human && !!removePlayer.player;
 
-    this.players.splice(index, 1);
+    if(!this.running) {
+      const isPresentHuman = removePlayer.human && !!removePlayer.player;
 
-    if(isPresentHuman) {
-      removePlayer.player.leaveMatch();
-      this.addHumanSlot();
+      this.players.splice(index, 1);
+
+      if(isPresentHuman) {
+        removePlayer.player.leaveMatch();
+        this.addHumanSlot();
+      }
+
+      if(this.isEmpty()) {
+        Match.remove(this.id);
+      }
+
+      if(this.getAdmins().length == 0) {
+        this.players.filter(player => player.human)[0].admin = true;
+      }
+      
+      this.emitUpdate();
     }
-
-    if(this.isEmpty()) {
-      Match.remove(this.id);
+    else {
+      removePlayer.human = false;
+      this.getUno().getPlayer(removePlayer.player.id).human = false;
+      this.emitUnoUpdateAll();
     }
-
-    if(this.getAdmins().length == 0) {
-      this.players.filter(player => player.human)[0].admin = true;
-    }
-    
-    this.emitUpdate();
   }
 
   getFirstOpenSpace() {
