@@ -42,24 +42,24 @@ export default {
       connection.getMatch().addBotSlot();
     });
   
-    socket.on('joinMatch', name => {
-      if(!Match.matchExists(name)) {
-        socket.emit('onError', 'There is no match named ' + name);
+    socket.on('joinMatch', matchId => {
+      if(!Match.matchExists(matchId)) {
+        socket.emit('onError', 'There is no match with id ' + matchId);
         return;
       }
   
-      if(Match.getMatch(name).hasPlayer(connection)) {
-        socket.emit('onError', 'You are already in this match');
+      if(Match.getMatch(matchId).hasPlayer(connection)) {
+        connection.emit('joinMatch', Match.getMatch(matchId).toParcel());
         return;
       }
   
-      const error = Match.getMatch(name).addHumanPlayer(connection);
+      const error = Match.getMatch(matchId).addHumanPlayer(connection);
   
       if(error) {
         socket.emit('onError', 'That game is full.');
       }
       else {
-        connection.joinMatch(name);
+        connection.joinMatch(matchId);
       }
     })
   

@@ -4,6 +4,12 @@ import router from '../router';
 export default {
   install(Vue, options) {
     const $network = {
+      get baseUrl() {
+        return !options.local ?
+          'https://playuno.app' :
+          'http://localhost:8080';
+      },
+
       get offline() {
         return router.currentRoute.path.indexOf('offline') > -1;
       },

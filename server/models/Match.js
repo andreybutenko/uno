@@ -2,6 +2,7 @@ import BotConnection from './BotConnection';
 import Connection from './Connection';
 
 import AiPlayer from '../../common/AiPlayer';
+import { generateId } from '../../common/IdGenerator';
 import PlayerAdapter from '../../common/PlayerAdapter';
 import Uno from '../../common/Uno';
 import UnoState from '../../common/UnoState';
@@ -11,6 +12,7 @@ let matches = [];
 export default class Match {
   constructor(name) {
     this.name = name;
+    this.id = generateId();
     this.players = [];
     this.running = false;
     this.uno = null;
@@ -23,6 +25,8 @@ export default class Match {
   toParcel() {
     return {
       ...this,
+      id: this.id,
+      encodedName: this.getEncodedName(),
       players: this.players.map((player, index) => {
         return {
           ...player,
@@ -31,6 +35,14 @@ export default class Match {
         }
       })
     }
+  }
+
+  getId() {
+    return this.id;
+  }
+
+  getEncodedName() {
+    return this.name.replace(/\W/g, '');
   }
 
   isEmpty() {
@@ -158,7 +170,7 @@ export default class Match {
         player: connection
       };
 
-      connection.joinMatch(this.name);
+      connection.joinMatch(this.getId());
       connection.emit('joinMatch', this.toParcel());
 
       this.emitUpdate();
@@ -190,7 +202,7 @@ export default class Match {
     }
 
     if(this.isEmpty()) {
-      Match.remove(this.name);
+      Match.remove(this.id);
     }
 
     if(this.getAdmins().length == 0) {
@@ -228,11 +240,6 @@ export default class Match {
 
   rename(newName) {
     this.name = newName;
-
-    this.players.forEach(player => {
-      player.player.updateMatchName(newName);
-    });
-
     this.emitUpdate();
   }
 
@@ -255,12 +262,12 @@ export default class Match {
       .forEach(player => player.player.emit(eventName, payload));
   }
 
-  static remove(matchName) {
-    matches = matches.filter(match => match.name != matchName);
+  static remove(id) {
+    matches = matches.filter(match => match.getId() != id);
   }
 
-  static matchExists(name) {
-    return matches.filter(match => match.name == name).length > 0;
+  static matchExists(id) {
+    return matches.filter(match => match.getId() == id).length > 0;
   }
 
   static getOpenMatches() {
@@ -269,7 +276,7 @@ export default class Match {
       .map(match => match.toParcel());
   }
 
-  static getMatch(name) {
-    return matches.filter(match => match.name == name)[0];
+  static getMatch(id) {
+    return matches.filter(match => match.getId() == id)[0];
   }
 }

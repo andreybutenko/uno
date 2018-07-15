@@ -34,12 +34,26 @@ export default new Router({
       beforeEnter (to, from, next) {
         Vue.prototype.$network.setupSocketio();
         next();
-     }
+      }
     },
     {
       path: '/lobby/offline',
       name: 'Offline Lobby',
       component: Lobby
+    },
+    {
+      path: '/lobby/:id',
+      name: 'In-Match Lobby',
+      props: true,
+      component: Lobby,
+      beforeEnter (to, from, next) {
+        Vue.prototype.$network.setupSocketio();
+        next();
+      }
+    },
+    {
+      path: '/join/:id',
+      redirect: '/lobby/:id'
     },
     {
       path: '/library',

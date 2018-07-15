@@ -8,7 +8,7 @@ export default class Connection {
     this.socket = socket;
     this.id = socket.id;
     this.name = generateName();
-    this.matchName = null;
+    this.matchId = null;
 
     this.socket.emit('onPlayerNameChange', this.name);
     this.socket.emit('setId', this.id);
@@ -41,29 +41,25 @@ export default class Connection {
   }
 
   inMatch() {
-    return this.matchName != null && typeof this.getMatch() !== 'undefined';
+    return this.matchId != null && typeof this.getMatch() !== 'undefined';
   }
 
   isMatchAdmin() {
     return this.getMatch().getAdmins().indexOf(this.getId()) > -1;
   }
 
-  joinMatch(matchName) {
-    console.log('joinMatch', matchName);
-    this.matchName = matchName;
+  joinMatch(matchId) {
+    console.log('joinMatch', matchId);
+    this.matchId = matchId;
   }
 
   leaveMatch() {
-    this.matchName = null;
+    this.matchId = null;
     this.emit('leaveMatch');
   }
 
-  updateMatchName(matchName) {
-    this.matchName = matchName;
-  }
-
   getMatch() {
-    return Match.getMatch(this.matchName);
+    return Match.getMatch(this.matchId);
   }
 
   emit(eventName, data) {

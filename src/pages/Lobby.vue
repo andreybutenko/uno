@@ -13,6 +13,7 @@
 
     <MatchView
       :playerId="playerId"
+      :playerName="playerName"
       :currentMatch="currentMatch"
       :messages="messages"
       :startGame="startGame"
@@ -37,6 +38,7 @@
   export default {
     name: 'Lobby',
     components: { IntroCard, MatchList, MatchView, PlayerDetail },
+    props: ['id'],
     data() {
       return {
         playerName: 'A New Player',
@@ -52,6 +54,10 @@
       }
       else {
         this.setName(generateName());
+      }
+
+      if(this.id) {
+        this.joinMatch(this.id);
       }
     },
     sockets: {
@@ -71,9 +77,14 @@
       },
       joinMatch(match) {
         this.currentMatch = match;
+
+        if(this.$route.path.indexOf(match.id) == -1) {
+          this.$router.push({ path: '/lobby/' + match.id });
+        }
       },
       leaveMatch() {
         this.currentMatch = null;
+        this.$router.push({ path: '/lobby/' });
       },
       onMatchUpdate(match) {
         this.currentMatch = match;
@@ -85,7 +96,9 @@
     methods: {
       setName(name) {
         this.playerName = name;
-        this.playerId = '[player]' + name;
+        if(this.$network.offline) {
+          this.playerId = '[player]' + name;
+        }
       },
       startGame() {
         if(this.$network.online) {
@@ -113,8 +126,9 @@
           this.currentMatch = null;
         }
       },
-      joinMatch(match) {
-        this.$network.emit('joinMatch', match.name);
+      joinMatch(matchId) {
+        this.$router.push({ path: '/lobby/' + matchId });
+        this.$network.emit('joinMatch', matchId);
       },
       createMatch() {
         if(this.$network.online) {
@@ -153,6 +167,13 @@
         }
         else {
           this.currentMatch.players.splice(index, 1);
+        }
+      }
+    },
+    watch: {
+      $route (to, from) {
+        if(to.name == 'In-Match Lobby' && from.name != 'In-Match Lobby') {
+          this.joinMatch(to.params.id);
         }
       }
     }

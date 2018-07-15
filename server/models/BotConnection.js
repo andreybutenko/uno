@@ -18,7 +18,6 @@ export default class BotConnection {
   getId() {
     return this.id;
   }
-
-  updateMatchName(){}
+  
   emit(){}
 }

@@ -5,7 +5,7 @@
     </div>
     <div class="chat-box" v-chat-scroll>
       <div v-for="(message, i) in messages" :key="i" class="message">
-        <span class="sender">{{ message.sender }}</span> <span class="content"></span>{{ message.content }}</span>
+        <span class="sender">{{ message.sender }}</span> <span class="content">{{ message.content }}</span>
       </div>
     </div>
     <div class="compose-container">
@@ -44,17 +44,22 @@
   .chat-view {
     display: flex;
     flex-direction: column;
+    height: 100%;
 
     &.dark {
       background-color: rgba(0, 0, 0, 0.8);
       color: #dfe6e9;
 
       .chat-header {
-        text-align: center;
+        margin: 16px;
       }
 
       .chat-box {
         border: 0;
+      }
+
+      .compose-container {
+        padding: 16px;
       }
     }
   }
@@ -62,7 +67,8 @@
   .chat-header {
     display: flex;
     flex-direction: row;
-    margin: 16px;
+    text-align: center;
+    margin: 16px 0;
 
     h1 {
       flex: 1;
@@ -79,8 +85,8 @@
     overflow-y: scroll;
     margin-bottom: 10px;
     min-height: 200px;
-    max-width: 400px;
     padding: 8px;
+    border-radius: 8px;
 
     .message {
       margin-bottom: 8px;
@@ -95,7 +101,6 @@
   .compose-container {
     display: flex;
     flex-direction: row;
-    padding: 16px;
     padding-top: 8px;
 
     .message-input {

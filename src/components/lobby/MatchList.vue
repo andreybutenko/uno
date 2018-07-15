@@ -17,7 +17,7 @@
         <span class="name">{{ match.name }}</span>
         <span class="status">{{ getStatus(match) }}</span>
         <span class="spacer"></span>
-        <button @click="joinMatch(match)">Join</button>
+        <button @click="joinMatch(match.id)">Join</button>
       </div>
     </div>
   </div>

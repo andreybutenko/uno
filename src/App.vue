@@ -31,6 +31,44 @@ export default {
     overflow: hidden;
   }
 
+  .lbtn {
+    font-family: 'Josefin Sans', sans-serif;
+    background: none;
+    cursor: pointer;
+    outline: none;
+    border: 0;
+    text-decoration: underline;
+    color: #3498db;
+    font-size: 16px;
+
+    &:hover {
+      color: #2980b9;
+    }
+  }
+
+  .vbtn-group {
+    display: flex;
+    flex-direction: row;
+
+    .vbtn {
+      flex: 1;
+      border-radius: 0;
+      margin-right: 0;
+      border-right-width: 0;
+
+      &:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+      }
+
+      &:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+        border-right-width: 1px;
+      }
+    }
+  }
+
   .vbtn {
     font-family: 'Josefin Sans', sans-serif;
     background-color: white;
@@ -61,6 +99,10 @@ export default {
 
     &.vbtn-green {
       background-color: #2ecc71;
+
+      &:hover {
+        background-color: #27ae60;
+      }
     }
 
     &.vbtn-blue {
@@ -71,10 +113,25 @@ export default {
       }
     }
 
+    &.vbtn-compact {
+      font-size: 12px;
+      padding: 4px 8px;
+    }
+
     &.vbtn-large {
       font-size: 18px;
       padding: 16px 32px;
-      border-radius: 32px;
+    }
+
+    &.vbtn-stacked-icon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 16px;
+
+      svg {
+        margin-bottom: 10px;
+      }
     }
   }
 </style>
