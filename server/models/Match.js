@@ -105,6 +105,11 @@ export default class Match {
     }
   }
 
+  onUserHighlightCard(id, index) {
+    this.getUno().getPlayer(id).selectedCardIndex = index;
+    this.emitUnoUpdateAll();
+  }
+
   onUserSelectColor(color) {
     this.waitingForInputFrom = null;
     this.waitingForUserInput = false;

@@ -1,11 +1,21 @@
+function computeFraction(i, total) {
+  if(total == 1) {
+    return 1 / 2;
+  }
+  else if(total == 2) {
+    return (i + 1) / 3;
+  }
+  else if(total != 2) {
+    return i / (total - 1); // subtract 1 because arrays are 0-indexed while math is 1-indexed
+  }
+}
+
 export default {
   // Get position of opponent detail box along the radius of a semi-circle given:
   //   i: the index of current opponent
   //   total: total number of enemy players to place
   getOpponentDetailStyle(i, total) {
-    const frac = total != 2 ?
-      i / (total - 1) : // subtract 1 because arrays are 0-indexed while math is 1-indexed
-      (i + 1) / 3;
+    const frac =  computeFraction(i, total);
     const radians = frac * Math.PI;
 
     return {
@@ -19,9 +29,7 @@ export default {
   //   i: the index of current opponent
   //   total: total number of enemy players to place
   getOpponentHandStyle(i, total) {
-    const frac = total != 2 ?
-      i / (total - 1) : // subtract 1 because arrays are 0-indexed while math is 1-indexed
-      (i + 1) / 3;
+    const frac =  computeFraction(i, total);
     const radians = frac * Math.PI;
 
     return {

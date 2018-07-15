@@ -53,6 +53,7 @@ export default class {
 
       let spliceIndex = DeckBuilder.indexOf(this.getPlayer(playerId).hand, card);
       this.getPlayer(playerId).hand.splice(spliceIndex, 1);
+      this.getPlayer(playerId).selectedCardIndex = -1;
 
       if(this.playSideEffects(playerId, card) === true) return;
 

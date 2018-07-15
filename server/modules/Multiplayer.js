@@ -56,6 +56,20 @@ export default {
       match.emitUnoUpdateAll();
     });
 
+    socket.on('userHighlightCard', index => {
+      if(!connection.inMatch() || !connection.getMatch().isRunning())  {
+        socket.emit('onError', 'You are not in a running match.');
+        return;
+      }
+
+      if(!connection.getMatch().isPlayerTurn(connection.getId())) {
+        socket.emit('onError', 'It is not your turn.');
+        return;
+      }
+
+      connection.getMatch().onUserHighlightCard(connection.getId(), index);
+    });
+
     socket.on('userSelectColor', color => {
       if(!connection.inMatch() || !connection.getMatch().isRunning())  {
         socket.emit('onError', 'You are not in a running match.');
@@ -73,7 +87,7 @@ export default {
       }
 
       connection.getMatch().onUserSelectColor(color);
-    })
+    });
 
     socket.on('startGame', () => {
       if(!connection.inMatch())  {

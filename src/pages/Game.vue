@@ -147,6 +147,9 @@
         }
       },
       mouseover(i) {
+        if(!this.localGame && this.playerTurn) {
+          this.$network.emit('userHighlightCard', i);
+        }
       },
       computeShrinkAmount() {
         if(this.compressed) {

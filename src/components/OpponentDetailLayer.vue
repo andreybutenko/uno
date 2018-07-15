@@ -1,6 +1,6 @@
 <template>
   <div class="opponent-detail-layer full-screen">
-    <div class="opponent" :class="{ active: player.id == currentPlayer }" v-for="(player, i) in opponents" :key="player.id" :style="getOpponentDetailStyle(i, opponents.length)">
+    <div class="opponent" :class="{ active: player.id == currentPlayer }" v-for="(player, i) in opponents" :key="player.id" :style="log(getOpponentDetailStyle(i, opponents.length)) || getOpponentDetailStyle(i, opponents.length)">
       <div class="content" :style="{ backgroundColor: getColor(i) }">
         <span class="player-name">{{ player.name }}</span>
         <span class="hand-count">
@@ -29,6 +29,7 @@
       getOpponentSelected(player) {
         return this.players[player].selectedCardIndex;
       },
+      log(e) {  console.log(e)},
       getOpponentDetailStyle: RadialLayout.getOpponentDetailStyle,
       getColor(i) {
         return COLORS[i % COLORS.length];
