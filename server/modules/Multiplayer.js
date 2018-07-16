@@ -95,6 +95,21 @@ export default {
         return;
       }
 
+      if(connection.getMatch().isRunning()) {
+        socket.emit('onError', 'Game is already started.');
+        return;
+      }
+
+      if(connection.getMatch().players.length == 1) {
+        socket.emit('onError', 'You need more than one player to start the match.');
+        return;
+      }
+
+      if(connection.getMatch().players.filter(player => player.open).length > 0) {
+        socket.emit('onError', 'You cannot start a game with open slots.');
+        return;
+      }
+
       connection.getMatch().startGame();
     });
 
