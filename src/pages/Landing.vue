@@ -10,6 +10,9 @@
           <router-link to="/lobby/offline" class="vbtn vbtn-transparent">Play Offline</router-link>
           <router-link to="/lobby" class="vbtn vbtn-large vbtn-blue">Play Online</router-link>
         </div>
+        <div class="footer-links">
+          <a href="https://github.com/andreybutenko/uno" target="_blank">Open-Source</a>
+        </div>
       </div>
       <img src="/static/curvy-border.svg" class="border" />
       <img src="/static/koala-tree.png" class="illustration" />
@@ -62,6 +65,7 @@
         justify-content: center;
         align-items: center;
         padding: 32px;
+        position: relative;
 
         h1 {
           font-family: 'Wendy One';
@@ -76,6 +80,24 @@
         .btn-container {
           margin-top: 16px;
         } 
+
+        .footer-links {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          padding: 16px;
+          text-align: right;
+
+          a {
+            color: #3498db;
+
+            &:hover {
+              color: #2980b9;
+            }
+          }
+
+        }
       }
 
       .border {
