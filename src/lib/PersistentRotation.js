@@ -1,22 +1,22 @@
 export default {
-  cache: {},
-  hasKey(key) {
-    return Object.keys(this.cache).indexOf(key) > -1;
+  cache: [],
+  getKey(index, length) {
+    return Math.max(length - index - 1, 0);
   },
-  hash(card) {
-    return card.type + '-' + card.color;
+  hasKey(key) {
+    return this.cache.length > key;
   },
   // Get a stack rotation for a given card
-  getRotation(card) {
-    const hash = this.hash(card);
-    if(this.hasKey(hash)) {
-      console.log('hasKey');
-      return this.cache[hash];
+  getRotation(index, length) {
+    const key = this.getKey(index, length);
+    if(this.hasKey(key)) {
+      console.log('hasKey' + key);
+      return this.cache[key];
     }
     else {
-      console.log('no hasKey');
+      console.log('no hasKey' + key);
       const rotation = this.getRandomInt(-45, 45) + 'deg';
-      this.cache[hash] = rotation;
+      this.cache[key] = rotation;
       return rotation;
     }
   },

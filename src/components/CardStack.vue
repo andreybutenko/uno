@@ -7,7 +7,7 @@
       :animateDisabled="true"
       :color="card.color"
       :type="card.type"
-      :style="{ zIndex: 8 - i, transform: 'rotate(' + getStackRotation(card) + ') translate(-50%, -50%)' }"
+      :style="{ zIndex: 8 - i, transform: 'rotate(' + getStackRotation(i, stack.length) + ') translate(-50%, -50%)' }"
       v-if="i < 8" />
   </div>
 </template>
@@ -22,9 +22,7 @@
     components: { Card },
     props: ['stack'],
     methods: {
-      getStackRotation(card) {
-        return PersistentRotation.getRotation(card);
-      }
+      getStackRotation: PersistentRotation.getRotation.bind(PersistentRotation)
     }
   }
 </script>
