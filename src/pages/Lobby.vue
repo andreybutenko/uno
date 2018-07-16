@@ -90,7 +90,7 @@
         this.currentMatch = match;
       },
       onError(text) {
-        alert(text);
+        console.log('Error from server: ' + text);
       }
     },
     methods: {

@@ -241,7 +241,7 @@
     },
     sockets: {
       onError(text) {
-        alert(text);
+        console.log('Error from server: ' + text);
       },
       onWin(data) {
         alert('winner: ' + data);
