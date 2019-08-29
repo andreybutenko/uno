@@ -34,6 +34,29 @@
         </div>
       </div>
     </div>
+
+    <div class="modal-overlay" v-if="showWinnerModal || showLoserModal">
+      <div class="modal winner-modal" v-if="showWinnerModal">
+        <img src="/static/koala-celebrating.png" class="illustration" />
+        <div class="modal-content">
+          <h1>Winner!</h1>
+          <p>
+            Congratulations, you won! Play again?
+          </p>
+          <button class="vbtn" @click="quit()">Quit to lobby</button>
+        </div>
+      </div>
+      <div class="modal loser-modal" v-if="showLoserModal">
+        <img src="/static/koala-celebrating.png" class="illustration" />
+        <div class="modal-content">
+          <h1>{{ winnerName }} won!</h1>
+          <p>
+            Nice job, but {{ winnerName }} won! Play again?
+          </p>
+          <button class="vbtn" @click="quit()">Quit to lobby</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -86,7 +109,10 @@
         removing: false,
         windowWidth: 1920,
         shrinkAmount: 0,
-        showChat: this.$network.online
+        showChat: this.$network.online,
+        winnerName: '',
+        showWinnerModal: true,
+        showLoserModal: false
       }
     },
     methods: {
@@ -159,6 +185,17 @@
         }
         else {
           this.shrinkAmount = 0;
+        }
+      },
+      quit() {
+        if(!this.localGame) {
+          if(this.$network.online) {
+            this.$network.emit('leaveMatch');
+          }
+          this.$router.push({ path: '/lobby/' });
+        }
+        else {
+          this.$router.push({ path: '/lobby/offline/' });
         }
       }
     },
@@ -243,10 +280,14 @@
       onError(text) {
         console.log('Error from server: ' + text);
       },
-      onWin(data) {
-        alert('winner: ' + data);
-        console.log(data);
-        console.log(this.uno);
+      onWin(playerId) {
+        if(playerId == this.playerId) {
+          this.showWinnerModal = true;
+        }
+        else {
+          this.showLoserModal = true;
+          this.winnerName = this.uno.getPlayer(playerId).name;
+        }
       },
       onGameEmit(event) {
         this.emit(event);
@@ -342,6 +383,39 @@
 
       .draw {
         background-color: #ff7675;
+      }
+    }
+  }
+
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .modal {
+      background-color: white;
+      border: 1px solid #bdc3c7;
+      border-radius: 8px;
+      padding: 16px 32px;
+      display: flex;
+      align-items: center;
+      max-width: 800px;
+
+      .illustration {
+        width: 200px;
+        height: 200px;
+        margin-right: 16px;
+      }
+
+      p {
+        margin: 8px 0;
       }
     }
   }

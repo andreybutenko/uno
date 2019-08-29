@@ -219,6 +219,7 @@ export default class Match {
       this.emitUpdate();
     }
     else {
+      removePlayer.player.leaveMatch();
       removePlayer.human = false;
       this.getUno().getPlayer(removePlayer.player.id).human = false;
       this.emitUnoUpdateAll();
