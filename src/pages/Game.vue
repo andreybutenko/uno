@@ -111,7 +111,7 @@
         shrinkAmount: 0,
         showChat: this.$network.online,
         winnerName: '',
-        showWinnerModal: true,
+        showWinnerModal: false,
         showLoserModal: false
       }
     },
